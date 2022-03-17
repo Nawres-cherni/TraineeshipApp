@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import * as firebase from 'firebase';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import rootReducer from './redux/reducers';
-import thunk from 'redux-thunk';
+//import { Provider } from 'react-redux';
+//import { createStore, applyMiddleware } from 'redux';
+//import rootReducer from './redux/reducers';
+//import thunk from 'redux-thunk';
 import React, { useEffect, useState,Component } from 'react'
-const  store = createStore(rootReducer, applyMiddleware(thunk))
+//const  store = createStore(rootReducer, applyMiddleware(thunk))
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXvS-cUDNmD0h2betfplMSIyMTZb9GVb4",
@@ -16,24 +16,34 @@ const firebaseConfig = {
   messagingSenderId: "942531933715",
   appId: "1:942531933715:web:a581d030a35e2d0a94b1e6"
 };
+
 if(firebase.apps.length === 0){
   firebase.initializeApp(firebaseConfig)
   }
+  passwordReset: email => {
+    return firebase.auth().sendPasswordResetEmail(email)
+  };
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './welcomePages/SplashScreen';
 import WelcomeScreen from './welcomePages/WelcomeScreen';
 import Login from './Pages/auth/Login';
 import Test from './Pages/auth/Test';
+import ForgotPassword from './Pages/auth/ForgotPassword';
 import MainScreen from './Pages/Main';
+import Etud from './Pages/auth/Etud';
+import AdminScreen from './Pages/auth/AdminScreen'
+import FormInput from './Pages/auth/components/FormInput'
+
+
 const Stack = createNativeStackNavigator();
 export default class App extends Component {
-  constructor(props) {
+/* constructor(props) {
     super()
     this.state = {
       loaded: false,
     }
-  }
+  }*/
 
   componentDidMount() {
     firebase.auth().onAuthStateChanged((user) => {
@@ -51,7 +61,9 @@ export default class App extends Component {
     })
   }
   render() {
-    const { loggedIn, loaded } = this.state;
+  {/*
+
+   const { loggedIn, loaded } = this.state;
     if(!loaded){
       return(
         <View>
@@ -60,26 +72,34 @@ export default class App extends Component {
       )
     }
     if (!loggedIn) {
+
+*/} 
       return (
-        <NavigationContainer initialRouteName="test">
+        <NavigationContainer initialRouteName="admin">
         <Stack.Navigator>
+        <Stack.Screen name="splash" component={SplashScreen} options={{headerShown: false}} />
+        <Stack.Screen name="login" component={Login} options={{headerShown: false}} />
+        <Stack.Screen name="input" component={FormInput} options={{headerShown: false}} />
         <Stack.Screen name="test" component={Test} options={{headerShown: false}} />
+        <Stack.Screen name="admin" component={AdminScreen} options={{headerShown: false}} />
+        <Stack.Screen name="etud" component={Etud} options={{headerShown: false}} />
         <Stack.Screen name="main" component={MainScreen} options={{headerShown: false}} />
-          <Stack.Screen name="splash" component={SplashScreen} options={{headerShown: false}} />
           <Stack.Screen name="welcome" component={WelcomeScreen} options={{headerShown: false}} />
-          <Stack.Screen name="login" component={Login} options={{headerShown: false}} />
+          <Stack.Screen name="resetPassword" component={ForgotPassword} options={{headerShown: false}} />
+
+
         </Stack.Navigator>
       </NavigationContainer>
       );
-    }
+    /*}
 
     return (
       <Provider store={store}>
           <MainScreen/>
         </Provider>
 
-    )
-}}
+    )*/}
+}
 
 const styles = StyleSheet.create({
   container: {

@@ -1,7 +1,6 @@
-//ta3 lyouùm
-
-import React, { Component , useState } from 'react'
-  import {
+//login mte3y s7i7a
+import React, { Children, Component } from 'react'
+import {
     SafeAreaView,
     Image,
     Text,
@@ -12,174 +11,285 @@ import React, { Component , useState } from 'react'
     ScrollView,
     TextInput,
     TouchableOpacity,
+    KeyboardAvoidingView,
+    Alert,
+    TouchableWithoutFeedback,
+    Keyboard
   } from 'react-native';
-  import firebase from 'firebase';
-  import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
- // import AnimatedInput from "react-native-animated-input";
-  import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-  import { Hideo } from 'react-native-textinput-effects';
   import { LinearGradient } from 'expo-linear-gradient' ;
+  import FontAwesome5 from 
+'react-native-vector-icons/FontAwesome5';
+import firebase from 'firebase';
+//import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+
 export default class Login extends Component {
 
-  constructor(props){
-    super(props);
-    this.state={
-        email:'',
-        password:'',
-        errorMessage:null,
-        showPass: true,
-        press: false
-    }
-    this.onSaveUser = this.onSaveUser.bind(this)
-}
 
-onSaveUser(){
-  const {email, password} = this.state;
-  firebase.auth().signInWithEmailAndPassword(email, password)
-  .then((result) =>{
-    this.props.navigation.navigate("main")
-  })
-  .catch((error)=>{
-      console.log(error)  
-  })
-   }
-showPass = () => {
-    if(this.state.press == false){
-  
-      this.setState({showPass: false, press:true})
-    }else{
-      this.setState({showPass: true, press:false})
+    constructor(props){
+        super(props);
+        this.state={
+            email:'',
+            password:'',
+            type:'',
+            errorMessage:null,
+            showPass: true,
+            press: false
+        }
+        this.onSaveUser = this.onSaveUser.bind(this)
     }
-  }
+    
+    onSaveUser(){
+      const {email, password} = this.state;
+      firebase.auth().signInWithEmailAndPassword(email,password)
+      .then((result) =>{
+          this.props.navigation.replace("etud")
+          Alert.alert('Success','Welcome')
+         console.log(result) 
+    })
+      .catch((error)=>{
+        Alert.alert('Error',error.message)
+          console.log(error)  
+      })
+       }
+       showPass = () => {
+        if(this.state.press == false){
+      
+          this.setState({showPass: false, press:true})
+        }else{
+          this.setState({showPass: true, press:false})
+        }
+      }
+
   render() {
     return (
-      <ScrollView 
-      style={{flex:1 , backgroundColor:'#fff'}}
-      showsVerticalScrollIndicator={false}
-      >
 
-{/*Header*/}
-<LinearGradient
-      colors={[ '#f4f5f3', '#001845' ]}
-      style={{
-        height: Dimensions.get('window').height / 2.5}}
->
-<View style={styles.brandView}>
-<Image style={{marginLeft:-250, marginTop:-20}}
+      <ScrollView>
+   
+             
+                <View style={styles.container}>
+          
+          <LinearGradient colors={['#001845', '#001845'  ]} style={styles.bigCircle}></LinearGradient>
+          <LinearGradient colors={['#001845', '#001845' ]} style={styles.smallCircle}></LinearGradient>
+<View style={styles.centrizedView}>
+  <View  style={styles.authBox}>
+    <View style={styles.logoBox}>
+<Image style={{marginRight:250,marginTop:-15,marginLeft:5}}
 source={require('../../assets/images/log.png')}
 />
-<Text style={styles.brandViewText}>TraineeShip</Text>
+    </View>
+    <Text style={styles.troubleLoginTitle}>
+      Bienvenue 
+    </Text>
+    <View style={styles.inputBox}>
+<Text style={styles.forgotMail}>SignIn </Text>
+<View marginLeft={10}>
+<TextInput
+         style={styles.input}
+            placeholder={'Email'}
+            keyboardType={'email-address'}
+            autoCapitalize="none"
+            onChangeText={email =>this.setState({email})}
+            value={this.state.email}
+            placeholderTextColor={'#001845'}
+            underlineColorAndroid='transparent'
+            backgroundColor={'rgb(223,228,234)'}
+        />
+          <FontAwesome5 name="mail-bulk" size={25} color={'#001845' } style={styles.Icon}
+     />
 </View>
-</LinearGradient>
+    
 
 
-{/*Bottom*/}
-<View style={styles.bottomView}>
-<View style={{padding: 40 }}>
-<Text style={{color:'#000', fontSize:34, marginLeft:100}}>Bienvenue</Text>
-<Text style={{color:'#000', fontSize:24, marginLeft:140}}>Sign In</Text>
-<View style={{marginTop:50}}>
-  <View floatingLabel style={{borderColor:'#4632A1'}}>
-     <View style={{ marginLeft:10}}>
-     <Hideo
-      borderColor={'#aee2c9'}
-      inputPadding={16}
-      labelHeight={24}
-      labelStyle={{ color: '#008445' }}
-      inputStyle={{ color: '#f4a197' }}
-    iconClass={FontAwesomeIcon}
-    iconName={'envelope'}
-   // inputStyle={{ borderColor:'#000'}}
-    iconColor={'white'}
-    iconBackgroundColor={'#001845'}
-    placeholder={'Email'}  
-    onChangeText={(email) => this.setState({ email })} 
-    //inputStyle={{ color: '#464949',backgroundColor:'#fff' }}     
-  />
-<View style={{marginTop:40}}> 
-<Hideo
-    iconClass={FontAwesomeIcon}
-    iconName={'lock'}
-    iconColor={'white'}
-    onChangeText={(password) => this.setState({ password })}
-    iconBackgroundColor={'#001845'}
-    inputStyle={{ color: '#464949',backgroundColor:'#fff' }} 
-    placeholder={'Password'}   
-    secureTextEntry={this.state.showPass}
-  />
-  <TouchableOpacity  style={styles.eyes}
+<View marginLeft={10}>
+<TextInput
+         style={styles.input}
+            placeholder={'Password'}
+            autoCapitalize="none"
+            onChangeText={password =>this.setState({password})}
+            value={this.state.password}
+            placeholderTextColor={'#001845'}
+            underlineColorAndroid='transparent'
+            secureTextEntry={this.state.showPass}
+            backgroundColor={'rgb(223,228,234)'}
+      />
+         <FontAwesome5 name="lock" size={25} color={'#001845' } style={styles.Icon}
+       />
+ <TouchableOpacity  style={styles.eyes}
 onPress ={this.showPass.bind(this)}>
  <FontAwesome5 name={this.state.press == false ?'eye' : 'eye-slash'} 
  size={20} 
- //sstyle={{marginRight:-150 , marginTop:5}}
- color={'#001845'} 
+ color={'#001845' } 
  />
 </TouchableOpacity>
-  </View>
-   </View>   
-  </View>
+</View>
     </View>
-</View>
 
-<TouchableOpacity rounded
-    style={[styles.login, styles.shadowLogin , {shadowColor:'#00ac'}]} 
-    onPress={() => this.onSaveUser()}>
-        <Text style={styles.textlog}>SignIn</Text>
+    <TouchableOpacity style={styles.loginButton} onPress={() => this.onSaveUser()}>
+<Text style={styles.loginButtonText}>
+  SignIn
+</Text>
     </TouchableOpacity>
+
+
+    
+    <TouchableOpacity 
+     onPress={() => this.props.navigation.navigate('resetPassword')}
+    >
+<Text style={styles.fogetPassword}>
+ Forget Password? Click Here
+</Text>
+    </TouchableOpacity>
+  </View>
 </View>
-      </ScrollView>
+       
+    </View>
+            
+            
+           
+
+        </ScrollView>
     )
   }
 }
 
-export const styles = StyleSheet.create({
-  brandView: {
-    flex :1,
-    justifyContent:'center',
-    alignItems:'center',
-    marginTop:-100
+
+
+
+const styles = StyleSheet.create({
+    container:{
+      flex:1,
+      position: 'relative',
+      backgroundColor:'#EaEaEa'
+    },
+    bigCircle:{
+      width: Dimensions.get('window').height * 0.7,
+      height: Dimensions.get('window').height * 0.7,
+      borderRadius:1000,
+      right: Dimensions.get('window').width * 0.25,
+      top:-50
+    },
+    smallCircle:{
+      width: Dimensions.get('window').height * 0.5,
+      height: Dimensions.get('window').height * 0.5,
+      borderRadius:1000,
+      position:'absolute',
+      marginBottom:-20,
+      bottom: Dimensions.get('window').width * -0.2,
+      right: Dimensions.get('window').width * -0.3,
+    },
+  centrizedView:{
+    width:'100%',
+    top:'-38%'
   },
-  brandViewText: {
-      color: '#fff',
-      fontSize:30,
-      fontWeight:'bold',
-      marginTop:-50,
-      textTransform:'uppercase'
+  
+  authBox:{
+  width:'90%',
+  height:'65%',
+  backgroundColor:'#fafafa',
+  borderRadius:20,
+  alignSelf:'center',
+  paddingHorizontal:14,
+  paddingBottom:30,
+  shadowColor:'#000',
+  shadowOffset:{
+    width:0,
+    height:2
   },
-  bottomView :{
-    flex:1.5,
-    backgroundColor:'#fff',
-    bottom:50,
-    borderTopStartRadius:60,
-    borderTopEndRadius:60,
+  shadowOpacity:0.25,
+  shadowRadius:3.84,
+  elevation:5
   },
-  eyes: {
-  marginHorizontal:2,
-  marginLeft:-12,
-  width:10
+  
+  logoBox:{
+  width:115,
+  height:115,
+  backgroundColor:'#fafafa',
+  borderRadius:1000,
+  alignSelf:'center',
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center',
+  top:-50,
+  marginBottom:-50,
+  shadowColor:"#000",
+  shadowOffset:{
+    width:0,
+    height:1
   },
-  eyes: {
-    position:'absolute',
-    top: 8,
-    right:37
+  shadowOpacity:0.2,
+  shadowRadius:1.41,
+  elevation:2
   },
-  login: {
- alignSelf:'center',
- height: 40,
- backgroundColor:'#000',
- width: Dimensions.get('window').width / 2,
- justifyContent: 'center',
- borderRadius: 45,
+  
+  troubleLoginTitle:{
+  fontSize:22,
+  fontWeight:'bold',
+  paddingHorizontal:55,
+  alignSelf:'center',
+  color:'#001845'
   },
-  shadowLogin :{
-      shadowOffset: {width:1 , height: 10},
-      shadowOpacity: 0.4,
-      shadowRadius:3,
-      elevation: 15
+  
+  forgotMail:{
+  fontSize:17,
+  alignSelf:'center',
+  color:'#001845'
   },
-  textlog: {
-    color: 'rgba(255,255,255,0.7)',
-    textAlign: 'center',
-    fontSize: 20
-     },
-})
+  fogetPassword:{
+marginTop:20,
+    fontSize:15,
+    alignSelf:'center',
+    color:'#001845'
+  },
+    inputBox:{
+      marginTop:10,
+    },
+ 
+  
+  
+    loginButton:{
+      width: 350,
+      height:45,
+      borderRadius: 45,
+     backgroundColor: '#001845',
+     justifyContent: 'center',
+     marginTop:20
+    },
+    loginButtonText:{
+      color:'#fff',
+      textAlign:'center',
+      fontSize:20,
+      fontWeight:'bold'
+    },
+   
+  
+   
+    eyes: {
+      position:'absolute',
+      top: 40,
+      left:290
+    },
+  
+  input:{
+    marginTop:30,
+    width: 330,
+    height:45,
+    borderRadius: 35,
+    fontSize:16,
+    paddingLeft:60,
+    backgroundColor:'#dfe4ea',
+    //borderColor:'#000',
+    }, 
+    Icon: {
+      position:'absolute',
+      top: 40,
+      left:20
+    },
+    inputContainer: {
+      marginTop:30,
+     
+    },
+  
+  })
+
+
+  //fetchSignInMethodsForEmail

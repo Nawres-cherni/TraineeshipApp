@@ -10,6 +10,7 @@ import React, { Component , useState } from 'react'
     Button,
     TextInput,
     TouchableOpacity,
+    Alert
   } from 'react-native';
 import firebase from 'firebase';
 export default class Test extends Component {
@@ -17,27 +18,34 @@ export default class Test extends Component {
      super(props);
 
      this.state = {
-         email: '',
-         password:'',
-         name:''
+        cin:'',
+        identifiant:'',
+        email:'',
+        password:'',
+        type:''
      }
      
      this.onSaveUser = this.onSaveUser.bind(this)
  }
  
  onSaveUser(){
-const {email, password, name} = this.state;
+const {cin,identifiant,email,password,type} = this.state;
 firebase.auth().createUserWithEmailAndPassword(email, password)
 .then((result) =>{
     firebase.firestore().collection("users")
     .doc(firebase.auth().currentUser.uid)
     .set({
-        name,
-        email
+        cin,
+        identifiant,
+        email,
+        password,
+        type
     })
+    Alert.alert('Message','Sucess')
     console.log(result)
 })
 .catch((error)=>{
+    Alert.alert('Error',error.message)
     console.log(error)  
 })
  }
@@ -48,8 +56,13 @@ firebase.auth().createUserWithEmailAndPassword(email, password)
           
           <TextInput
                     style={styles.textInput}
-                    placeholder="name"
-                    onChangeText={(name) => this.setState({ name })}
+                    placeholder="cin"
+                    onChangeText={(cin) => this.setState({ cin })}
+                />
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="identifiant"
+                    onChangeText={(identifiant) => this.setState({ identifiant })}
                 />
                 <TextInput
                     style={styles.textInput}
@@ -62,7 +75,11 @@ firebase.auth().createUserWithEmailAndPassword(email, password)
                     secureTextEntry={true}
                     onChangeText={(password) => this.setState({ password })}
                 />
-
+         <TextInput
+                    style={styles.textInput}
+                    placeholder="type"
+                    onChangeText={(type) => this.setState({ type })}
+                />
                 <Button
                     style={styles.button}
                     onPress={() => this.onSaveUser()}
