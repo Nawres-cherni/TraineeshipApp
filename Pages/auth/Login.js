@@ -14,7 +14,8 @@ import {
     KeyboardAvoidingView,
     Alert,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
+    StatusBar
   } from 'react-native';
   import { LinearGradient } from 'expo-linear-gradient' ;
   import FontAwesome5 from 
@@ -33,18 +34,31 @@ export default class Login extends Component {
             type:'',
             errorMessage:null,
             showPass: true,
-            press: false
+            press: false,
+            refs:''
         }
         this.onSaveUser = this.onSaveUser.bind(this)
     }
     
+    focusNextField(nextField) {
+      this.refs[nextField].focus();
+    }
     onSaveUser(){
       const {email, password} = this.state;
       firebase.auth().signInWithEmailAndPassword(email,password)
       .then((result) =>{
-          this.props.navigation.replace("etud")
+        if(email=="admin@gmail.com"){
+          this.props.navigation.navigate("Home")
           Alert.alert('Success','Welcome')
          console.log(result) 
+        }else if(email=="cherninawress22@gmail.com"){
+         //this.props.navigation.navigate('profilApp');
+         this.props.navigation.navigate('appHome');
+        }
+        else{
+          this.props.navigation.navigate('homeEc');
+        }
+          
     })
       .catch((error)=>{
         Alert.alert('Error',error.message)
@@ -64,7 +78,7 @@ export default class Login extends Component {
     return (
 
       <ScrollView>
-   
+         <StatusBar   translucent={false} backgroundColor={"#001845"}   />
              
                 <View style={styles.container}>
           
@@ -84,6 +98,7 @@ source={require('../../assets/images/log.png')}
 <Text style={styles.forgotMail}>SignIn </Text>
 <View marginLeft={10}>
 <TextInput
+ ref="1"
          style={styles.input}
             placeholder={'Email'}
             keyboardType={'email-address'}
@@ -93,6 +108,9 @@ source={require('../../assets/images/log.png')}
             placeholderTextColor={'#001845'}
             underlineColorAndroid='transparent'
             backgroundColor={'rgb(223,228,234)'}
+            returnKeyType="next"
+            blurOnSubmit={false}
+            onSubmitEditing={() => this.focusNextField('2')}
         />
           <FontAwesome5 name="mail-bulk" size={25} color={'#001845' } style={styles.Icon}
      />
@@ -102,6 +120,7 @@ source={require('../../assets/images/log.png')}
 
 <View marginLeft={10}>
 <TextInput
+ ref="2"
          style={styles.input}
             placeholder={'Password'}
             autoCapitalize="none"
@@ -111,6 +130,8 @@ source={require('../../assets/images/log.png')}
             underlineColorAndroid='transparent'
             secureTextEntry={this.state.showPass}
             backgroundColor={'rgb(223,228,234)'}
+           
+        
       />
          <FontAwesome5 name="lock" size={25} color={'#001845' } style={styles.Icon}
        />
@@ -125,7 +146,7 @@ onPress ={this.showPass.bind(this)}>
     </View>
 
     <TouchableOpacity style={styles.loginButton} onPress={() => this.onSaveUser()}>
-<Text style={styles.loginButtonText}>
+<Text style={styles.loginButtonText}  >
   SignIn
 </Text>
     </TouchableOpacity>

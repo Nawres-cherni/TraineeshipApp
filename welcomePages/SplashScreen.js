@@ -18,7 +18,7 @@ const SplashScreen = ({navigation}) =>  {
   const moveAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 setTimeout(() => {
-  navigation.replace('login') ;
+  navigation.navigate('login') ;
 }, 3000);
   useEffect(() => {
     Animated.sequence([
