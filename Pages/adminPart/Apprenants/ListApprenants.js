@@ -1,5 +1,3 @@
-//list s7i7a
-//ListApprenants
 
 
 import React, { useState, useEffect ,useRef,useContext} from "react";
@@ -60,7 +58,7 @@ const ListApprenants = ({props,navigation}) => {
   const searchFilterFunction = (text) => {
     if(text){  
         const newData = users.filter(item => {
-            const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
+            const itemData = item.cin ? item.cin.toUpperCase() : ''.toUpperCase();
             const textData = text.toUpperCase();
             return itemData.indexOf(textData) > -1;
         })
@@ -210,56 +208,17 @@ style={{padding: 10, margin: 10 , width:370,height:100,borderRadius:25,  elevati
         )}
         >
         <FontAwesome5 name="user-plus" style={styles.actionButtonIcon} />
+
       </ActionButton.Item>
     </ActionButton>
+  
+
       </SafeAreaView>
+
     </SafeAreaProvider>
 
 
 
-
-    /*     
-        <Button
-          onPress={() => navigation.navigate("creatuser")}
-          title="Create User"
-        />
-        
-      <Card style={{padding: 10, margin: 10 , borderRadius:25,elevation:5}}>
-        <Text>Open up App.js to start working on your app!</Text>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </Card>
-
-        {users.map((user) => {
-          return (
-            <ListItem
-              key={user.id}
-              bottomDivider
-              onPress={() => {
-                navigation.navigate("userdetail", {
-                  userId: user.id,
-                });
-              }}
-            >
-              <ListItem.Chevron />             
-             <Avatar
-              source={user.imageUrl && {uri: user.imageUrl }}
-                rounded
-              />
-            
-              <ListItem.Content>
-                <ListItem.Subtitle>{user.name}</ListItem.Subtitle>
-                <ListItem.Subtitle>{user.email}</ListItem.Subtitle>
-                <ListItem.Subtitle>{user.password}</ListItem.Subtitle>
-
-                </ListItem.Content>
-            </ListItem>
-          );
-        })}
-      </ScrollView>
-
-    */
-    
     
     );
   };

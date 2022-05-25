@@ -1,6 +1,6 @@
 //App s7i7a
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View,Animated ,Dimensions} from 'react-native';
+//import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View,Animated ,Dimensions,StatusBar} from 'react-native';
 import * as firebase from 'firebase';
 //import { Provider } from 'react-redux';
 //import { createStore, applyMiddleware } from 'redux';
@@ -172,9 +172,12 @@ const theme=useContext(themeContext);
   const tabOffsetValue = useRef(new Animated.Value(0)).current;
   return(
      /* <NavigationContainer independent={true}>*/
+
   <Tab.Navigator 
   tabBarOptions={{
-    keyboardHidesTabBar: true
+    keyboardHidesTabBar: true,
+  
+
   }}
   screenOptions={{
     headerShown: false,
@@ -295,6 +298,8 @@ options={{
         })} />
    
   </Tab.Navigator>
+    
+
    /*
 <Animated.View style={{
         width: getWidth() - 20,
@@ -349,7 +354,7 @@ return(
       options={{
         headerShown: false,
         drawerIcon: ({ focused }) => (
-          <Ionicons name="home-outline" size={22} style={{marginRight:-15}} color={focused ? theme.iconDrawerActive : theme.iconDrawerAnActive} />
+          <Ionicons name="md-home" size={22} style={{marginRight:-15}} color={focused ? theme.iconDrawerActive : theme.iconDrawerAnActive} />
         ),
       }}
     />
@@ -521,6 +526,9 @@ function DrawerNavigationEC(){
   )
   }
 export default function App(){
+
+
+
 const [darkApp,setDarkApp]=useState(false);
 
 useEffect(()=>{
@@ -550,10 +558,19 @@ useEffect(()=>{
       <StackSplash.Navigator >
       <StackSplash.Screen name="login"  component={Login} options={navOptionHandler}/>
 
+      <StackSplash.Screen name="map"  component={Map} options={navOptionHandler}/>
+
+
+      <StackSplash.Screen name="homeEc"  component={DrawerNavigationEC} options={navOptionHandler}/>
+
       <StackSplash.Screen name="Home"  component={DrawerNavigation} options={navOptionHandler}/>
 
 
       <StackSplash.Screen name="splash"  component={SplashScreen} options={navOptionHandler}/>
+
+
+
+
 
 
 
@@ -564,11 +581,9 @@ useEffect(()=>{
       <StackSplash.Screen name="appProfilEC"  component={ProfilHome} options={navOptionHandler}/>
       <StackSplash.Screen name="appDetailProfilEC"  component={DetailProfilEC} options={navOptionHandler}/> 
       <StackSplash.Screen name="profil"  component={Profil} options={navOptionHandler}/>
-      <StackSplash.Screen name="homeEc"  component={DrawerNavigationEC} options={navOptionHandler}/>
       <StackSplash.Screen name="ecDetail"  component={PostECDEtail} options={navOptionHandler}/>
       <StackSplash.Screen name="ProfilEC"  component={ProfilEC} options={navOptionHandler}/>
       <StackSplash.Screen name="EditProfileEC"  component={EditProfilEC} options={navOptionHandler}/>
-      <StackSplash.Screen name="map"  component={Map} options={navOptionHandler}/>
       <StackSplash.Screen name="detailec"  component={DetailEC} options={navOptionHandler}/>
       <StackSplash.Screen name="profilApp"  component={ProfilApp} options={navOptionHandler}/>
       <StackSplash.Screen name="EditProfile"  component={EditProfilApp} options={navOptionHandler}/>

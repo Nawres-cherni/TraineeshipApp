@@ -12,7 +12,8 @@ light:{
     actiobBtn:'#1f487e',
     tabBackground:'#fff',
     iconDrawerActive:'#1f487e',
-    iconDrawerAnActive:'gray'
+    iconDrawerAnActive:'gray',
+box:'#FAFAFA'
 
 
 
@@ -30,7 +31,9 @@ dark:{
     actiobBtn:'#000',
     tabBackground:'#000',
     iconDrawerActive:'#000',
-    iconDrawerAnActive:'#fff'
+    iconDrawerAnActive:'#fff',
+    box:'#E6E6E6'
+
 
 
 

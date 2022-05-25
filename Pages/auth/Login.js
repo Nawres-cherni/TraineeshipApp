@@ -49,7 +49,7 @@ export default class Login extends Component {
       .then((result) =>{
         if(email=="admin@gmail.com"){
           this.props.navigation.navigate("Home")
-          Alert.alert('Success','Welcome')
+          Alert.alert('Success','Welcome Admin')
          console.log(result) 
         }else if(email=="cherninawress22@gmail.com"){
          //this.props.navigation.navigate('profilApp');
@@ -92,10 +92,10 @@ source={require('../../assets/images/log.png')}
 />
     </View>
     <Text style={styles.troubleLoginTitle}>
-      Bienvenue 
+      Welcome 
     </Text>
     <View style={styles.inputBox}>
-<Text style={styles.forgotMail}>SignIn </Text>
+<Text style={styles.forgotMail}>Sign In </Text>
 <View marginLeft={10}>
 <TextInput
  ref="1"
@@ -147,7 +147,7 @@ onPress ={this.showPass.bind(this)}>
 
     <TouchableOpacity style={styles.loginButton} onPress={() => this.onSaveUser()}>
 <Text style={styles.loginButtonText}  >
-  SignIn
+  Sign In
 </Text>
     </TouchableOpacity>
 

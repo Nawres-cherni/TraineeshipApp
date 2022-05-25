@@ -1,6 +1,4 @@
-//update s7i7a
-//Detail s7i7a bel image maghyr update
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useContext} from "react";
 import {
   ScrollView,
   Button,
@@ -17,14 +15,18 @@ import  firebase from 'firebase';
 import 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { FontAwesome,FontAwesome5 } from '@expo/vector-icons'
+import { FontAwesome,FontAwesome5 ,MaterialCommunityIcons} from '@expo/vector-icons'
+import themeContext from "../../Styles/themeContext";
 
 
 const UpdateApprenants = (props) => {
+  const theme=useContext(themeContext);
+
   const [imageUrl, setimageUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
   const [userData, setUserData] = useState(null);
+
     const initialState = {
         id: "",
         cin:"",
@@ -178,16 +180,16 @@ const UpdateApprenants = (props) => {
     
       return (
         
-        <View>
+        <View style={{backgroundColor: theme.backClair}}>
             <ScrollView>
-                  <View style={styles.header}>
+                <View style={[styles.header,{backgroundColor: theme.header,}]}>
 
                   <TouchableOpacity onPress={()=>props.navigation.goBack()} style={{marginTop:10}}>
 <Icon name="chevron-left" size={28} color={"#fff"} />
                  </TouchableOpacity>
  
                  <View style={{alignContent:'center',alignItems:'center', marginTop:50}}>
-            <Text style={styles.headerTitle}>Update Apprenant</Text>
+            <Text style={[styles.headerTitle,{marginTop:-30}]}>Update Apprenant</Text>
 </View>
 
   <Icon name="notifications-none" size={28} color={"#fff"} style={{marginTop:10}} />
@@ -201,7 +203,7 @@ const UpdateApprenants = (props) => {
 
 
 <View style={styles.centrizedView}>
-      <View style={styles.box}>
+      <View style={[styles.box,{backgroundColor:theme.box}]}>
           <View >
             <Image
               source={{
@@ -217,7 +219,7 @@ const UpdateApprenants = (props) => {
                 height: 160,
                 borderRadius: 150 / 2,
                 overflow: "hidden",
-                borderWidth: 3,
+                borderWidth: 1.5,
                 borderColor: "#777777",
                 alignSelf:'center',
                 marginTop:20,
@@ -227,7 +229,24 @@ const UpdateApprenants = (props) => {
           </View>
           <View style={{ padding: 10 }}>
         
-             <Text style={{marginBottom:10,alignSelf:'center'}} onPress={pickImage}>Update Image</Text>
+        <View style={{
+        backgroundColor:'#fff',
+        width: 44,
+        height: 44,
+        borderRadius: 44/2,
+        marginTop:-50,
+        marginBottom:15,
+        marginLeft:185,
+      backgroundColor:theme.box,
+      borderWidth: 1.5,
+      borderColor: "#777777",
+
+      }}
+        >
+        <MaterialCommunityIcons name="image-edit-outline"  size={25} style={{marginTop:10,alignSelf:'center'}}  onPress={pickImage}/>
+
+        </View>
+
 
 
 
@@ -297,55 +316,24 @@ const UpdateApprenants = (props) => {
 
           </View>
 
-          <View style={styles.btn}>
-            <Button
-              title="Delete"
-              onPress={() => openConfirmationAlert()}
-              color="#E37399"
-            />
-          </View>
-          <View>
-            <Button title="Update" onPress={updateUser} color="#19AC52" />
-          </View>
-        </View>
+          <TouchableOpacity style={[styles.Button,{backgroundColor:'#19AC52'}]} onPress={updateUser}>
+<Text style={styles.ButtonText}  >
+  Update
+</Text>
+    </TouchableOpacity>
+
+
+    <TouchableOpacity style={[styles.Button,{backgroundColor:'#E37399',marginBottom:15}]} onPress={openConfirmationAlert}>
+<Text style={styles.ButtonText}  >
+  Delete
+</Text>
+    </TouchableOpacity>
+    </View>
 
 
 
      
       </View>
-
-{/* 
-
- <View>
-            <TextInput
-              placeholder="Name"
-              autoCompleteType="username"
-              style={styles.inputGroup}
-              value={user.name}
-              onChangeText={(value) => handleTextChange(value, "name")}
-            />
-          </View>
-          <View>
-            <TextInput
-              autoCompleteType="email"
-              placeholder="Email"
-              style={styles.inputGroup}
-              value={user.email}
-              onChangeText={(value) => handleTextChange(value, "email")}
-            />
-          </View>
-          <View>
-            <TextInput
-              placeholder="Phone"
-              autoCompleteType="tel"
-              style={styles.inputGroup}
-              value={user.phone}
-              onChangeText={(value) => handleTextChange(value, "phone")}
-            />
-          </View>
-
-*/}
-         
          <View style={{marginBottom:90}}/>
          </ScrollView>
         </View>
@@ -357,15 +345,33 @@ const UpdateApprenants = (props) => {
         flex: 1,
         padding: 35,
       },
+
+      Button:{
+        width: 350,
+        height:45,
+        borderRadius: 45,
+       justifyContent: 'center',
+       marginTop:10,
+       
+      },
+      ButtonText:{
+        color:'#fff',
+        textAlign:'center',
+        fontSize:18,
+       
+      },
+     
+
+
+
       header: {
         paddingVertical: 20,
         paddingHorizontal: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: "#1f487e",
         borderBottomLeftRadius:45,
         borderBottomRightRadius:45,
-        height:120,
+        height:90,
       },
       loader: {
         left: 0,
@@ -388,7 +394,7 @@ const UpdateApprenants = (props) => {
       },
       action: {
         flexDirection: 'row',
-        marginTop: 10,
+        marginTop: 15,
         borderBottomWidth: 1,
         borderBottomColor: '#f2f2f2',
         paddingBottom: 5
@@ -417,7 +423,7 @@ const UpdateApprenants = (props) => {
     box:{
       width:'90%',
       height:'85%',
-      backgroundColor:'#fafafa',
+     
       borderRadius:20,
       alignSelf:'center',
       paddingHorizontal:14,
