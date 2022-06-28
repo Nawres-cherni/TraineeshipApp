@@ -51,7 +51,7 @@ export default class Login extends Component {
           this.props.navigation.navigate("Home")
           Alert.alert('Success','Welcome Admin')
          console.log(result) 
-        }else if(email=="cherninawress22@gmail.com"){
+        }else if(email=="m1@gmail.com"){
          //this.props.navigation.navigate('profilApp');
          this.props.navigation.navigate('appHome');
         }
@@ -110,6 +110,7 @@ source={require('../../assets/images/log.png')}
             backgroundColor={'rgb(223,228,234)'}
             returnKeyType="next"
             blurOnSubmit={false}
+         
             onSubmitEditing={() => this.focusNextField('2')}
         />
           <FontAwesome5 name="mail-bulk" size={25} color={'#001845' } style={styles.Icon}
@@ -130,7 +131,7 @@ source={require('../../assets/images/log.png')}
             underlineColorAndroid='transparent'
             secureTextEntry={this.state.showPass}
             backgroundColor={'rgb(223,228,234)'}
-           
+          
         
       />
          <FontAwesome5 name="lock" size={25} color={'#001845' } style={styles.Icon}

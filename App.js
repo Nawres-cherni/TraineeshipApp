@@ -1,13 +1,14 @@
 //App s7i7a
-//import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View,Animated ,Dimensions,StatusBar} from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View,Animated ,Dimensions,LogBox,} from 'react-native';
 import * as firebase from 'firebase';
 //import { Provider } from 'react-redux';
 //import { createStore, applyMiddleware } from 'redux';
 //import rootReducer from './redux/reducers';
 //import thunk from 'redux-thunk';
+
 import React, { useEffect, useState,useContext ,useRef} from 'react'
-import { FontAwesome5 ,Foundation,MaterialIcons,Ionicons} from '@expo/vector-icons'
+import { FontAwesome5 ,Foundation,MaterialIcons,Ionicons,AntDesign} from '@expo/vector-icons'
 //const  store = createStore(rootReducer, applyMiddleware(thunk))
 import 'react-native-gesture-handler';
 const firebaseConfig = {
@@ -26,6 +27,9 @@ if(firebase.apps.length === 0){
   passwordReset: email => {
     return firebase.auth().sendPasswordResetEmail(email)
   };
+
+
+ // LogBox.ignoreAllLogs(true)
 import { NavigationContainer,DefaultTheme,DarkTheme ,useTheme} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './welcomePages/SplashScreen';
@@ -55,15 +59,15 @@ import EditProfilEC from './Pages/ecPart/EditProfilEC';
 import Map from './Pages/ecPart/Map';
 import UpdateEC from './Pages/adminPart/E.conventionnéesPart/UpdateEC';
 import AddPost from './Pages/ecPart/AddPost';
-
+import PostDetailScreen from './Pages/apprenantPart/PostDetailScreen';
 import HomeEC from './Pages/ecPart/HomeEC';
 import Profil from './Pages/ecPart/Profil';
 import PostECDEtail from './Pages/ecPart/PostECDEtail';
 import ECPostCard from './Pages/ecPart/components/ECPostCard';
-
+import Favorite from './Pages/apprenantPart/Favorite';
 import ProgressiveImage from './Pages/ecPart/components/ProgressiveImage';
-
-
+import MapApp from './Pages/apprenantPart/MapApp';
+import LikeList from './Pages/apprenantPart/LikeList';
 
 //Apprenant Oart
 import Home from './Pages/apprenantPart/Home';
@@ -74,13 +78,20 @@ import themeContext from './Pages/Styles/themeContext';
 import theme from './Pages/Styles/theme';
 
 
+//chat Apprenants Part
+import MessageApp from './Pages/apprenantPart/ChatPartApp/MessageApp';
+import ChatApp from './Pages/apprenantPart/ChatPartApp/ChatApp';
+
+import ChatEc from './Pages/ecPart/ChatPartEc/ChatEc';
+import MessageEc from './Pages/ecPart/ChatPartEc/MessageEc';
 const DrawerApprenant = createDrawerNavigator();
 const DrawerEC = createDrawerNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
 const TabEc = createBottomTabNavigator();
+const TabApp = createBottomTabNavigator();
 
-const TabApprenant = createBottomTabNavigator();
+
 const StackHomeAdmin = createNativeStackNavigator();
 const StackSplash = createNativeStackNavigator();
 const StackListAppre = createNativeStackNavigator();
@@ -478,21 +489,184 @@ function TabNavigatorECPart(){
     })}
     />
    
+
+   <TabEc.Screen name="Message" component={MessageEc}
+    screenOptions={{unmountOnBlur: true }}
+    options={{
+     
+      tabBarIcon: ({ focused }) => (
+        <View style={{
+          // centring Tab Button...
+          position: 'absolute',
+          top: 15,
+          alignItems:"center",
+          justifyContent:"center"
+        }}>
+          <AntDesign
+            name="wechat"
+            size={30}
+            color={focused ? "#1f487e" : 'gray'}
+            style={{top:-10}}
+          ></AntDesign>
+              <Text style={{color: focused ? "#1f487e" : 'gray',fontSize:12,marginTop:-15}}>Message</Text>          
+        </View>     
+      )
+    }} listeners={({ navigation, route }) => ({
+      // Onpress Update....
+      tabPress: e => {
+        Animated.spring(tabOffsetValue, {
+          toValue: getWidth() * 1.8,
+          useNativeDriver: true
+        }).start();
+      }
+    })}
+    />
   </TabEc.Navigator>
   
   )
 }
 
 
-function DrawerNavigationApprenants(){
+
+function TabNavigatorAppPart(){
+  const tabOffsetValue = useRef(new Animated.Value(0)).current;
+  return(
+     /* <NavigationContainer independent={true}>*/
+  <TabApp.Navigator 
+  tabBarOptions={{
+    keyboardHidesTabBar: true
+  }}
+  screenOptions={{
+    headerShown: false,
+    tabBarShowLabel: false,
+    
+    // Floating Tab Bar...
+    tabBarStyle: {
+      backgroundColor: 'white',
+      position: 'absolute',
+    // bottom: 20,
+      //marginTop:-40,
+      marginHorizontal: 20,
+      // Max Height...
+      height: 60,
+      borderRadius: 10,
+      // Shadow...
+      shadowColor: '#000',
+      shadowOpacity: 0.06,
+      shadowOffset: {
+        width: 10,
+        height: 10
+      },
+      paddingHorizontal: 20,
+   
+    }
+  }}>
+
+
+
+
+    <TabApp.Screen name="Home" component={Home}
+    screenOptions={{unmountOnBlur: true }}
+    options={{
+     
+      tabBarIcon: ({ focused }) => (
+        <View style={{
+          // centring Tab Button...
+          position: 'absolute',
+          top: 15,
+          alignItems:"center",
+          justifyContent:"center"
+        }}>
+          <FontAwesome5
+            name="home"
+            size={30}
+            color={focused ? "#1f487e" : 'gray'}
+            style={{top:-10}}
+          ></FontAwesome5>
+              <Text style={{color: focused ? "#1f487e" : 'gray',fontSize:12,marginTop:-15}}>Home</Text>          
+        </View>     
+      )
+    }} listeners={({ navigation, route }) => ({
+      // Onpress Update....
+      tabPress: e => {
+        Animated.spring(tabOffsetValue, {
+          toValue: getWidth() * 1.8,
+          useNativeDriver: true
+        }).start();
+      }
+    })}
+    />
+  
+   
+
+   <TabApp.Screen name="MessageApp" component={MessageApp}
+    screenOptions={{unmountOnBlur: true }}
+    options={{
+     
+      tabBarIcon: ({ focused }) => (
+        <View style={{
+          // centring Tab Button...
+          position: 'absolute',
+          top: 15,
+          alignItems:"center",
+          justifyContent:"center"
+        }}>
+          <AntDesign
+            name="wechat"
+            size={30}
+            color={focused ? "#1f487e" : 'gray'}
+            style={{top:-10}}
+          ></AntDesign>
+              <Text style={{color: focused ? "#1f487e" : 'gray',fontSize:12,marginTop:-15}}>Message</Text>          
+        </View>     
+      )
+    }} listeners={({ navigation, route }) => ({
+      // Onpress Update....
+      tabPress: e => {
+        Animated.spring(tabOffsetValue, {
+          toValue: getWidth() * 1.8,
+          useNativeDriver: true
+        }).start();
+      }
+    })}
+    />
+  </TabApp.Navigator>
+  
+  )
+}
+
+
+function DrawerNavigationApprenants(props){
+  const theme=useContext(themeContext);
   return(
     <DrawerApprenant.Navigator
     drawerContent={(props) => <CustomDrawerApprenant {...props} />}>      
-        <DrawerApprenant.Screen name="Accueil" component={Home}  options={navOptionHandler}/>
-        <DrawerApprenant.Screen name="Profil" component={ProfilApp}  options={navOptionHandler}/>
-        
+        <DrawerApprenant.Screen name="HomeApp" component={TabNavigatorAppPart}  options={{
+                    headerShown: false,
+                  drawerItemStyle: { display: 'none' }
+        }}/>
+        <DrawerApprenant.Screen name="Accueil" component={Home}   options={{
+        headerShown: false,
+        drawerIcon: ({ focused }) => (
+          <Ionicons name="md-home" size={22} style={{marginRight:-15}} color={focused ? theme.iconDrawerActive : theme.iconDrawerAnActive} />
+        ),
+      }}/>
 
-        <DrawerApprenant.Screen name="appProfilEC" component={ProfilHome}  options={{
+
+
+
+        <DrawerApprenant.Screen name="Profil" component={ProfilApp}  options={{
+        headerShown: false,
+        drawerIcon: ({ focused }) => (
+          <FontAwesome5 name="user-circle" size={22} style={{marginRight:-15}} color={focused ? theme.iconDrawerActive : theme.iconDrawerAnActive} />
+        ),
+      }}/>
+        
+        <DrawerEC.Screen name="PostECDEtail" component={PostECDEtail} {...props} options={{
+                    headerShown: false,
+                  drawerItemStyle: { display: 'none' }
+        }}/>       
+        <DrawerApprenant.Screen name="appProfilEC" component={ProfilHome} {...props} options={{
                     headerShown: false,
                   drawerItemStyle: { display: 'none' }
         }}/>       
@@ -504,18 +678,41 @@ function DrawerNavigationApprenants(){
 
 
   
-function DrawerNavigationEC(){
+function DrawerNavigationEC(props){
+const theme=useContext(themeContext);
+
   return(
     <DrawerEC.Navigator
-    drawerContent={(props) => <CustomDrawerEC {...props} />}>      
-        <DrawerEC.Screen name="AccueilEc" component={TabNavigatorECPart}  options={{
+    drawerContent={(props) => <CustomDrawerEC {...props} />}>     
+     
+        <DrawerEC.Screen name="HomeEc" component={TabNavigatorECPart}  options={{
                     headerShown: false,
                   drawerItemStyle: { display: 'none' }
         }}/>
-        <DrawerEC.Screen name="HomeEc" component={HomeEC}  options={navOptionHandler}/>
+        <DrawerEC.Screen name="Home" component={HomeEC}  options={{
+        headerShown: false,
+        drawerIcon: ({ focused }) => (
+          <Ionicons name="md-home" size={22} style={{marginRight:-15}} color={focused ? theme.iconDrawerActive : theme.iconDrawerAnActive} />
+        ),
+      }}/>
+       
+    
 
-        <DrawerEC.Screen name="ProfilEc" component={ProfilEC}  options={navOptionHandler}/>
-        <DrawerEC.Screen name="Add Post" component={AddPost}  options={navOptionHandler}/>
+
+        <DrawerEC.Screen name="Profil" component={ProfilEC}  options={{
+        headerShown: false,
+        drawerIcon: ({ focused }) => (
+          <FontAwesome5 name="user-circle" size={22} style={{marginRight:-15}} color={focused ? theme.iconDrawerActive : theme.iconDrawerAnActive} />
+        ),
+      }}/>
+        <DrawerEC.Screen name="Add Post" component={AddPost}  options={{
+        headerShown: false,
+        drawerIcon: ({ focused }) => (
+          <MaterialIcons name="post-add" size={22} style={{marginRight:-15}} color={focused ? theme.iconDrawerActive : theme.iconDrawerAnActive} />
+        ),
+      }}/>
+    
+
         <DrawerEC.Screen name="ProfilECDetail" component={ProfilHome}  options={{
                     headerShown: false,
                   drawerItemStyle: { display: 'none' }
@@ -525,7 +722,7 @@ function DrawerNavigationEC(){
         </DrawerEC.Navigator>
   )
   }
-export default function App(){
+export default function App(props){
 
 
 
@@ -552,11 +749,30 @@ useEffect(()=>{
 
   return(
     
+    
     <themeContext.Provider  value={darkApp === true ? theme.dark : theme.light}>
+ 
  <NavigationContainer //</themeContext.Provider>}
  >
       <StackSplash.Navigator >
       <StackSplash.Screen name="login"  component={Login} options={navOptionHandler}/>
+    
+    
+      <StackSplash.Screen name="Favorite"  component={Favorite} options={navOptionHandler}/>
+      <StackSplash.Screen name="MessageApp"  component={MessageApp} options={navOptionHandler}/>
+      <StackSplash.Screen name="ChatApp"  component={ChatApp} options={navOptionHandler}/>
+
+
+      <StackSplash.Screen name="ChatEC"  component={ChatEc} options={navOptionHandler}/>
+
+
+
+      <StackSplash.Screen name="LikeList"  component={LikeList} options={navOptionHandler}/>
+
+
+
+      <StackSplash.Screen name="MapApp"  component={MapApp} options={navOptionHandler}/>
+
 
       <StackSplash.Screen name="map"  component={Map} options={navOptionHandler}/>
 
@@ -568,8 +784,9 @@ useEffect(()=>{
 
       <StackSplash.Screen name="splash"  component={SplashScreen} options={navOptionHandler}/>
 
+      
 
-
+      <StackSplash.Screen name="PostDetailScreen"  component={PostDetailScreen} options={navOptionHandler}/>
 
 
 
@@ -578,7 +795,11 @@ useEffect(()=>{
 
       <StackSplash.Screen name="appHome"  component={DrawerNavigationApprenants} options={navOptionHandler}/>
       
-      <StackSplash.Screen name="appProfilEC"  component={ProfilHome} options={navOptionHandler}/>
+      <StackSplash.Screen name="appProfilEC"  component={ProfilHome} options={navOptionHandler} {...props}/>
+      <DrawerEC.Screen name="PostECDEtail" component={PostECDEtail} {...props} options={{
+                    headerShown: false,
+                 
+        }}/> 
       <StackSplash.Screen name="appDetailProfilEC"  component={DetailProfilEC} options={navOptionHandler}/> 
       <StackSplash.Screen name="profil"  component={Profil} options={navOptionHandler}/>
       <StackSplash.Screen name="ecDetail"  component={PostECDEtail} options={navOptionHandler}/>

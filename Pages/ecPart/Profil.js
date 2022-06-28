@@ -102,7 +102,7 @@ const Profil = ({navigation, route}) => {
           style={styles.userImg}
           source={{uri: userData ? userData.imageUrl || 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg' : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'}}
         />
-        <Text style={styles.userName}>{userData ? userData.nom_res || 'Test' : 'Test'} {userData ? userData.nom_soc || 'User' : 'User'}</Text>
+        <Text style={styles.userName}>{userData ? userData.name || 'Test' : 'Test'} {userData ? userData.nom_soc || 'User' : 'User'}</Text>
         {/* <Text>{route.params ? route.params.userId : user.uid}</Text> */}
         <Text style={styles.aboutUser}>
         {userData ? userData.about || 'No details added.' : ''}

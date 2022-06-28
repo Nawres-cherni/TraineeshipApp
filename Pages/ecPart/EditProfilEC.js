@@ -13,11 +13,14 @@ import {
 } from "react-native";
 import  firebase from 'firebase';
 import 'firebase/storage';
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
+
 import { FontAwesome,FontAwesome5 ,Entypo,MaterialCommunityIcons,Foundation} from '@expo/vector-icons'
 import ActionButton from 'react-native-action-button';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import { Avatar, TouchableRipple } from 'react-native-paper';
 export default  EditProfilApp = (props) => {
   const [imageUrl, setimageUrl] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -70,7 +73,7 @@ export default  EditProfilApp = (props) => {
     .doc(firebase.auth().currentUser.uid)
     .update({
         nom_soc:user.nom_soc,
-      nom_res:user.nom_res,
+      name:user.name,
       email: user.email,
       password: user.password,
       fax:user.fax,
@@ -157,6 +160,7 @@ export default  EditProfilApp = (props) => {
     if (!result.cancelled) {
       setimageUrl(result.uri);
     }
+    bs.current.snapTo(1);
   };
 
   const openCamera = async () => {
@@ -177,31 +181,84 @@ export default  EditProfilApp = (props) => {
       setimageUrl(result.uri);
       console.log(result.uri);
     }
+
+    bs.current.snapTo(1);
   }
 
+  const  renderInner = () => (
 
-
-
+      <ScrollView>
+            <View style={styles.panel}>
+      <View style={{alignItems: 'center'}}>
+        <Text style={styles.panelTitle}>Upload Photo</Text>
+        <Text style={styles.panelSubtitle}>Change Your Profile Picture</Text>
+      </View>
+      <TouchableOpacity style={styles.panelButton} onPress={openCamera}>
+        <Text style={styles.panelButtonTitle}>Take Photo</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.panelButton} onPress={pickImage}>
+        <Text style={styles.panelButtonTitle}>Choose From Library</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.panelButton}
+        onPress={() => bs.current.snapTo(1)}>
+        <Text style={styles.panelButtonTitle}>Cancel</Text>
+      </TouchableOpacity>
+      </View>
+      </ScrollView>
+     
+    
+  );
+  const    renderHeader = () => (
+    <View style={styles.header}>
+      <View style={styles.panelHeader}>
+        <View style={styles.panelHandle} />
+      </View>
+    </View>
+  );
+  const   bs = React.createRef();
+  const  fall = new Animated.Value(1);
 
 
   return(
 
 
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView >
+ <View style={styles.header1}>
 
 <TouchableOpacity onPress={()=>props.navigation.goBack()}>
-<Icon name="chevron-left" size={28} color={"#fff"} />
-                 </TouchableOpacity>
-                 <Text style={styles.headerTitle}>Edit Profil</Text>
-                 <Icon name="notifications-none" size={28} color={"#fff"} />
+<Icon name="chevron-left" size={28} color={"#fff"}style={{marginTop:10}}  />
+     </TouchableOpacity>
+     <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
+
+<Text style={styles.headerTitle}>Edit Profil</Text>
+
+
+
 </View>
+
+</View>
+<BottomSheet
+        ref={bs}
+        snapPoints={[330, 0]}
+        renderContent={renderInner}
+        renderHeader={renderHeader}
+        initialSnap={1}
+        callbackNode={fall}
+        enabledGestureInteraction={true}
+      />
+
+
+
       <ScrollView>
+        
+
       <View style={styles.centrizedView}>
       <View style={styles.box}>
      
-      <View >
-       <Image
+      <View  style={styles.editProfile} >
+       <Avatar.Image 
+       size={150} 
         source={{
          uri: imageUrl
          ? imageUrl
@@ -211,31 +268,34 @@ export default  EditProfilApp = (props) => {
          : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
      }}
          style={{
-           height: 150,
-           width: '100%',
-           marginTop:70,
-           marginBottom:40
+           marginTop:40,
+ 
+           alignSelf:'center'
          }}
        />
+        <TouchableRipple
+                           onPress={() => bs.current.snapTo(0)}
+                            rippleColor="rgba(0, 0, 0, .32)"
+                            borderless={true}
+                         
+                        >
+                            <View style={[styles.editProfile_icon,{alignSelf:'center',marginBottom:50,marginTop:20}]} >
+
+                                <FontAwesome5
+                                    name="user-edit"
+                                    size={15}
+                                    color={"#032468"}
+                                />
+                                <Text style={styles.editProfile_icon_text} >Change Profile Photo</Text>
+                            </View>
+                        </TouchableRipple>
     
-       <ActionButton buttonColor="#05375a"  >
-      <ActionButton.Item
-        buttonColor="#9b59b6"
-        title="Take Photo"
-        onPress={openCamera}>
-        <FontAwesome5 name="camera-retro" style={styles.actionButtonIcon} />
-      </ActionButton.Item>
-      <ActionButton.Item
-        buttonColor="#3498db"
-        title="Choose Photo"
-        onPress={pickImage}>
-        <FontAwesome5 name="images" style={styles.actionButtonIcon} />
-      </ActionButton.Item>
-    </ActionButton>
      
      
      </View>
-     <View style={{ padding: 10 }}>
+     <View style={{  
+
+    paddingVertical:5 ,marginTop:20,paddingHorizontal:10}}>
    
 {/* Nom_societer*/}
 <View style={styles.action1}>
@@ -259,10 +319,10 @@ export default  EditProfilApp = (props) => {
           <FontAwesome5 name="user-circle" color="#05375a" size={20}/>
            <TextInput 
             ref={ref_input2}
-               placeholder="nom_res"
+               placeholder="name"
                style={styles.textInput1}
-               value={user ? user.nom_res : ''}
-               onChangeText={(txt) => setUser({...user, nom_res: txt})}
+               value={user ? user.name : ''}
+               onChangeText={(txt) => setUser({...user, name: txt})}
                underlineColorAndroid='transparent'
                returnKeyType="next"
                blurOnSubmit={false}
@@ -403,7 +463,15 @@ export default  EditProfilApp = (props) => {
                 </View>  
   {/* button update*/}
   <View style={{marginTop:20}}>
-       <Button title="Update" onPress={updateUser}  color="#19AC52" />
+
+    
+  <View style={[styles.buttonSaveApprenant,{backgroundColor:'#19AC52'}]}>
+        <TouchableOpacity onPress={() => updateUser()}>
+          <Text style={{color:'#fff'}}>Update Profil</Text>
+        </TouchableOpacity>
+      </View>
+
+      
      </View>
      </View>
    
@@ -413,80 +481,9 @@ export default  EditProfilApp = (props) => {
    
       </ScrollView>
      
-  
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     {/* Parti 2
-  <View>
-  <Image
-              source={{
-                uri: imageUrl
-                ? imageUrl
-                : user
-                ? user.imageUrl ||
-                  'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg'
-                : 'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
-            }}
-              style={{
-                height: 135,
-                width: 300
-              }}
-            />
-          </View>
-
-
-                    <Text style={{marginBottom:10,alignSelf:'center'}} onPress={pickImage}>Update Image</Text>
-  <TextInput 
-                    placeholder="Nom et Prenom"
-                    style={styles.textInput1}
-                    //value={user.name}
-                    value={user ? user.name : ''}
-                    onChangeText={(txt) => setUser({...user, name: txt})}
-                   // onChangeText={(value) => handleTextChange(value, "name")}
-                
-                    />
-                    <TouchableOpacity onPress={updateUser}>
-                      <Text>Update</Text>
-                    </TouchableOpacity>
-
-
-                    <View >
-       
-    </View>
-      */} 
   </SafeAreaView>
-
-
-
-
-
-
-
-
-
   )
 }
 
@@ -496,6 +493,37 @@ const styles = StyleSheet.create({
 
     marginTop:80
   },
+  buttonSaveApprenant:{
+    width: 370,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf:'center',
+    borderRadius: 10,
+    backgroundColor:'#1f487e',
+    //opacity:0.8,
+  
+
+  },
+  header: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#333333',
+    shadowOffset: {width: -1, height: -3},
+    shadowRadius: 2,
+    shadowOpacity: 0.4,
+    // elevation: 5,
+    paddingTop: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  editProfile_icon: {
+    flexDirection: 'row',
+    marginTop: 10
+},
+editProfile_icon_text: {
+    marginLeft: 10,
+    color: '#032468',
+},
   centrizedView:{
     width:'100%',
   
@@ -505,18 +533,18 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: 'bold',
     fontSize: 18,
-    marginTop:20
+    marginTop:28,
+    alignSelf:'center'
+    
   },
-  header: {
+  header1: {
     paddingVertical: 20,
     paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: "#1f487e",
-    top:-80,
     height:90,
-    borderBottomLeftRadius:45,
-    borderBottomRightRadius:45
+
     
   },
   actionButtonIcon: {
@@ -525,21 +553,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   box:{
-    width:'90%',
-    height:690,
-    backgroundColor:'#fafafa',
-    borderRadius:20,
-    alignSelf:'center',
-    paddingHorizontal:14,
-    paddingBottom:30,
-    shadowColor:'#000',
-    shadowOffset:{
-      width:0,
-      height:2
-    },
-    shadowOpacity:0.25,
-    shadowRadius:3.84,
-    elevation:10
+  padding:10
     },
   loader: {
     left: 0,
@@ -565,7 +579,8 @@ const styles = StyleSheet.create({
     marginTop: 50,
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
-    paddingBottom: 5
+    paddingBottom: 5,
+    marginStart:5
 },
 
   action: {
@@ -573,7 +588,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
-    paddingBottom: 5
+    paddingBottom: 5,
+    paddingVertical:15,
+    marginStart:5
 },
 
 
@@ -583,7 +600,8 @@ action1: {
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
     paddingBottom: 5,
-    marginTop:-20
+    marginTop:-20,
+    marginStart:5
 },
 
 textInput1: {
@@ -595,5 +613,45 @@ textInput1: {
     borderBottomWidth: 1,
     borderBottomColor: "#cccccc",
 },
+panel: {
+  padding: 20,
+  backgroundColor: '#FFFFFF',
+  paddingTop: 20,
+  marginBottom:80
+},
+
+panelHeader: {
+  alignItems: 'center',
+},
+panelHandle: {
+  width: 40,
+  height: 8,
+  borderRadius: 4,
+  backgroundColor: '#00000040',
+  marginBottom: 10,
+},
+panelTitle: {
+  fontSize: 27,
+  height: 35,
+},
+panelSubtitle: {
+  fontSize: 14,
+  color: 'gray',
+  height: 30,
+  marginBottom: 10,
+},
+panelButton: {
+  padding: 13,
+  borderRadius: 10,
+  backgroundColor: '#1f487e',
+  alignItems: 'center',
+  marginVertical: 7,
+},
+panelButtonTitle: {
+  fontSize: 17,
+  fontWeight: 'bold',
+  color: 'white',
+},
+
 });
   

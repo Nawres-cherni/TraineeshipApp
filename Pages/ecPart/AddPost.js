@@ -39,10 +39,11 @@ const AddPost = (props) => {
           userId: user,
           post: post,
           postImg: imageUrl,
-          postTime: firebase.firestore.Timestamp.fromDate(new Date()),
-          likes: null,
+          postTime: firebase.firestore.Timestamp.fromDate(new Date()) ,
+          likes: [],
           comments: null,
         })
+        
         .then((result) => {
           console.log(result) 
 
@@ -193,13 +194,19 @@ const AddPost = (props) => {
 
   return (
     <View style={styles.container}>
-
 <View style={styles.header1}>
-<TouchableOpacity onPress={()=>navigation.openDrawer()}>
-      <Icon name="sort" size={28} color={"#fff"} />
-                       </TouchableOpacity>
-                 <Text style={styles.headerTitle}>Add post</Text>
-                 <Icon name="notifications-none" size={28} color={"#fff"} />
+
+<TouchableOpacity onPress={()=>navigation.goBack()}>
+<Icon name="chevron-left" size={28} color={"#fff"}style={{marginTop:10}}  />
+     </TouchableOpacity>
+     <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
+
+<Text style={styles.headerTitle}>Add Post</Text>
+
+
+
+</View>
+
 </View>
 
       
@@ -212,9 +219,7 @@ const AddPost = (props) => {
         callbackNode={fall}
         enabledGestureInteraction={true}
       />
-      <Animated.View style={{margin: 20,
-        opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
-    }}>
+    
 
 <View style={styles.centrizedView}>
 <ScrollView>
@@ -272,7 +277,7 @@ const AddPost = (props) => {
 </ScrollView>
 
 </View>
-      </Animated.View>
+   
     </View>
   );
 };
@@ -282,7 +287,7 @@ export default AddPost;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop:80
+   // marginTop:80
   },
   centrizedView:{
     width:'100%',
@@ -325,7 +330,9 @@ color:'#000'
     color: "#fff",
     fontWeight: 'bold',
     fontSize: 18,
-    marginTop:20
+    marginTop:28,
+    alignSelf:'center'
+    
   },
   header1: {
     paddingVertical: 20,
@@ -333,10 +340,8 @@ color:'#000'
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: "#1f487e",
-    top:-80,
     height:90,
-    borderBottomLeftRadius:45,
-    borderBottomRightRadius:45
+
     
   },
   authBox:{
@@ -347,6 +352,7 @@ color:'#000'
   alignSelf:'center',
   paddingHorizontal:14,
   paddingBottom:30,
+  marginTop:80,
   shadowColor:'#000',
   shadowOffset:{
     width:0,

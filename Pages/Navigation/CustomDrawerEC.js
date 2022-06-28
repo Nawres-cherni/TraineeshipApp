@@ -78,16 +78,16 @@ this.props.navigation.replace('login')
           style={{backgroundColor:'#1f487e',width:"100%"}}>
             <Image
              source={{uri : this.state.user.imageUrl}}
-              style={{height: 80, width: 80,borderRadius: 40, marginBottom: 10}}
+              style={{height: 80, width: 80,borderRadius: 40, marginBottom: 10,marginTop:30}}
             />
             <Text
               style={{
                 color: '#fff',
                 fontSize: 18,
-                
+                marginStart:10,
                 marginBottom: 15,
               }}>
-           {this.state.user.nom_res}
+           {this.state.user.name}
             </Text>
            
           </View>

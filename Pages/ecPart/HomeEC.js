@@ -1,228 +1,190 @@
-//HomeEC
-import React, { useState, useEffect } from 'react';
+//Home Ec ta3 video 
+import React, { Component } from "react";
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  View,
-  Text,
-  TextInput,
-  ImageBackground,
-  FlatList,
-  Dimensions,
-  TouchableOpacity,
-  Alert
-} from 'react-native';
+    View,
+    FlatList,
+    RefreshControl,
+    ActivityIndicator,
+    Dimensions,
+    TouchableOpacity,
+    ScrollView,
+    Text,
+    StyleSheet
+} from "react-native";
+import { StatusBar } from 'expo-status-bar';
+
+import ECPostCard from './components/ECPostCard';
+import { Avatar,TouchableRipple } from "react-native-paper";
+
 import  firebase from 'firebase';
 import 'firebase/storage';
-import ECPostCard from './components/ECPostCard';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import AddPost from './AddPost';
-import CustomSwitch from './components/CustomSwitch';
 const {width} = Dimensions.get('screen');
-const Posts = [
-    {
-      id: '1',
-      userName: 'Jenny Doe',
-      userImg: require('../../assets/images/1.jpg'),
-      postTime: '4 mins ago',
-      post:
-        'Hey there, this is my test for a post of my social app in React Native.',
-      postImg: require('../../assets/images/edit_user.png'),
-      liked: true,
-      likes: '14',
-      comments: '5',
-    },]
-const HomeEC = ({navigation}) => {
-    const [deleted, setDeleted] = useState(false);
-    const [Quote, setQuote] = useState('Loading...');
-    const [Author, setAuthor] = useState('Loading...');
-    const [isLoading, setIsLoading] = useState(false);
-    const [initializing, setInitializing] = useState(true);
-    const [posts, setPosts] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState();
-    const [gamesTab, setGamesTab] = useState(1);
+let onEndReachedCalledDuringMomentum = false;
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
-    const onSelectSwitch = value => {
-      setGamesTab(value);
-    };
+export default class HomeEC extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            uid: firebase.auth().currentUser.uid,
+            isLoading: null,
+            moreLoading: null,
+            lastDoc: [],
+            posts: [],
+            myFlollowing: [],
+            Quote:'Loading...',
+            Author:'Loading...',
+            user: {},
+            chats: [],
+            bgColor: '#FFF'
+        }
+    }
+
+    
+
+    componentDidMount() {
+        let chatData = []
+        const user = firebase.auth().currentUser.uid; 
+        this.unsubscribe = firebase.firestore()
+        .collection("e_conventionnées")
+        .doc(user)
+        .onSnapshot(doc =>{
+          chatData = doc.data().chats
+          this.setState({user: doc.data(),chats: chatData, bgColor: doc.data().bgColor,});
+        });
+        this.getposts();
+        this.randomQuote();
+
+    }
+    
+    componentWillUnmount(){
+        this.unsubscribe();
+      }
+
+    getposts = async () => {
+
+       // this.setState({ isLoading: true });
+
+        const snapshot = await firebase.firestore().collection('posts').orderBy('postTime', 'desc').limit(10).get();
+
+        if (!snapshot.empty) {
+            let newPosts = [];
+
+            this.setState({ lastDoc: snapshot.docs[snapshot.docs.length - 1] });
+
+            for (let i = 0; i < snapshot.docs.length; i++) {
+                let userData = {}
+                console.log(snapshot.docs[i].data().userId)
+
+                if (snapshot.docs[i].data().userId === firebase.auth().currentUser.uid) {
+                    firebase.firestore().collection('e_conventionnées').doc(snapshot.docs[i].data().userId).get()
+                        .then(snap => userData = snap.data())
+                        .then(() => {
+                            newPosts.push({ ...snapshot.docs[i].data(), ...userData, ...{ postId: snapshot.docs[i].id } });
+                        })
+                    }
+    
+                }
+    
+    
+    
+                this.setState({ posts: newPosts })
+            } else {
+                this.setState({ lastDoc: null })
+            }
+            setTimeout(() => this.setState({ isLoading: false }), 1200)
+    
+        }
+
   
 
-    const randomQuote = () => {
-      setIsLoading(true);
-      fetch("https://api.quotable.io/random").then(res => res.json()).then(result => {
-        // console.log(result.content);
-        setQuote(result.content);
-        setAuthor(result.author);
-        setIsLoading(false);
-      })
-    }
-    const fetchPosts = async () => {
-        try {
-          const list = [];
+
+        randomQuote = () => {
+            this.setState({ isLoading:true });
+          
+            fetch("https://api.quotable.io/random").then(res => res.json()).then(result => {
+              // console.log(result.content);
+            this.setState({ Quote:result.content });
+            this.setState({ Author:result.author });
+            this.setState({ isLoading:false });
     
-          await firebase.firestore()
-            .collection('posts')
-            .orderBy('postTime', 'desc')
-            .get()
-            .then((querySnapshot) => {
-              // console.log('Total Posts: ', querySnapshot.size);
-    
-              querySnapshot.forEach((doc) => {
-                const {
-                  userId,
-                  post,
-                  postImg,
-                  postTime,
-                  likes,
-                  comments,
-                } = doc.data();
-                list.push({
-                  id: doc.id,
-                  userId,
-                  userName: 'Test Name',
-                  userImg:
-                    'https://lh5.googleusercontent.com/-b0PKyNuQv5s/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclxAM4M1SCBGAO7Rp-QP6zgBEUkOQ/s96-c/photo.jpg',
-                  postTime: postTime,
-                  post,
-                  postImg,
-                  liked: false,
-                  likes,
-                  comments,
-                });
-              });
-            });
-    
-          setPosts(list);
-    
-          if (loading) {
-            setLoading(false);
+            
+            })
           }
     
-          console.log('Posts: ', posts);
-        } catch (e) {
-          console.log(e);
-        }
-      };
-  
-      function onAuthStateChanged(user) {
-        setUser(user);
-        if (initializing) setInitializing(false);
-      }
-      
-      useEffect(() => {
-        fetchPosts();
-      }, []);
-    
-      
-      useEffect(() => {
-        fetchPosts();
-        setDeleted(false);
-        randomQuote();
-        const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
-        return subscriber; 
-      }, [deleted]);
-    
-      const handleDelete = (postId) => {
-        Alert.alert(
-          'Delete post',
-          'Are you sure?',
-          [
-            {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed!'),
-              style: 'cancel',
-            },
-            {
-              text: 'Confirm',
-              onPress: () => deletePost(postId),
-            },
-          ],
-          {cancelable: false},
-        );
-      };
-      const deletePost = (postId) => {
-        console.log('Current Post Id: ', postId);
-    
-        firebase.firestore()
-          .collection('posts')
-          .doc(postId)
-          .get()
-          .then((documentSnapshot) => {
-            if (documentSnapshot.exists) {
-              const {postImg} = documentSnapshot.data();
-    
-              if (postImg != null) {
-                const storageRef = firebase.storage().refFromURL(postImg);
-                const imageRef = firebase.storage().ref(storageRef.fullPath);
-    
-                imageRef
-                  .delete()
-                  .then(() => {
-                    console.log(`${postImg} has been deleted successfully.`);
-                    deleteFirestoreData(postId);
-                  })
-                  .catch((e) => {
-                    console.log('Error while deleting the image. ', e);
-                  });
-                // If the post image is not available
-              } else {
-                deleteFirestoreData(postId);
-              }
-            }
-          });
-      };
-    
-
-      const deleteFirestoreData = (postId) => {
-        firebase.firestore()
-          .collection('posts')
-          .doc(postId)
-          .delete()
-          .then(() => {
-            Alert.alert(
-              'Post deleted!',
-              'Your post has been deleted successfully!',
-            );
-            setDeleted(true);
-          })
-          .catch((e) => console.log('Error deleting posst.', e));
-      };
-
-      if (initializing) return null;
-      const ListHeader = () => {
-        return null;
-      };
-  return (
-    <SafeAreaView style={{flex: 1}}>
- <View style={style.header}>
-
-<TouchableOpacity onPress={()=>navigation.openDrawer()}>
-<Icon name="sort" size={28} color={"#fff"} />
-                 </TouchableOpacity>
  
-  <Icon name="notifications-none" size={28} color={"#fff"} />
-</View>
-<ScrollView>
-<View
-          style={{
-            backgroundColor: "#1f487e",
-            height: 60,
-            paddingHorizontal: 20,
-            borderBottomLeftRadius:45,
-            borderBottomRightRadius:45,
-            paddingHorizontal:20,
+
+    onRefresh = () => {
+        setTimeout(() => {
+            this.getposts();
+        }, 1000);
+    }
+
+    renderFooter = () => {
+        if (!this.state.moreLoading) return true;
+
+        return (
+            <ActivityIndicator
+                size='large'
+                color={'#D83E64'}
+                style={{ marginBottom: 10 }}
+            />
+        )
+    }
+
+    render() {
+        return (
+            <View style={{ flex: 1,backgroundColor:'#FFF' }}>
+                  <StatusBar barStyle="light-content" backgroundColor="#1f487e" />  
+             <View style={style.header}>
+
+<TouchableOpacity onPress={()=>this.props.navigation.openDrawer()}>
+<Icon name="sort" size={28} color={"#fff"} style={{marginTop:10}} />
+                 </TouchableOpacity>
+                 <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
            
-          }}>
-          <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
-            <Text style={style.headerTitle}>Welcome {user.email}</Text>
             <Text style={style.headerTitle}>Accueil</Text>
            
            
-            <View
+      
+          </View>
+          <Avatar.Image size={45}     source={{uri : this.state.user.imageUrl}} style={{marginTop:10}} />
+  
+</View>
+
+
+<ScrollView 
+  refreshControl={
+    <RefreshControl
+        refreshing={this.state.isLoading}
+        onRefresh={this.onRefresh}
+    />
+}
+>
+        <View
+          style={{
+            backgroundColor: "#1f487e",
+            height: 10,
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,           
+            elevation: 5,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems:'center',
+          }}>
+         <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
+       
+
+        <View
         style={style.inputContainer}>
            <Text
           style={{        
@@ -255,7 +217,7 @@ const HomeEC = ({navigation}) => {
            // marginBottom: 10,
             //paddingHorizontal: 30,
           }}>
-          {Quote}
+          {this.state.Quote}
         </Text>
         <FontAwesome5
           name="quote-right"
@@ -277,205 +239,208 @@ const HomeEC = ({navigation}) => {
             marginTop:180,
             marginLeft:-200
           }}>
-          —— {Author}
+          —— {this.state.Author}
         </Text>
 
       </View>
-          </View>
-        </View>
-    {loading ? (
-      <ScrollView
+
+      </View>
+     
+        </View>       
+
+
+
+        <ScrollView
         style={{flex: 1}}
         contentContainerStyle={{alignItems: 'center'}}>
-        <View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <View style={{width: 60, height: 60, borderRadius: 50}} />
-            <View style={{marginLeft: 20}}>
-              <View style={{width: 120, height: 20, borderRadius: 4}} />
-              <View
-                style={{marginTop: 6, width: 80, height: 20, borderRadius: 4}}
-              />
-            </View>
-          </View>
-          <View style={{marginTop: 10, marginBottom: 30}}>
-            <View style={{width: 300, height: 20, borderRadius: 4}} />
-            <View
-              style={{marginTop: 6, width: 250, height: 20, borderRadius: 4}}
-            />
-            <View
-              style={{marginTop: 6, width: 350, height: 200, borderRadius: 4}}
-            />
-          </View>
+ <View>
+          <View>
+          
+         
         </View>
         <View>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <View style={{width: 60, height: 60, borderRadius: 50}} />
-            <View style={{marginLeft: 20}}>
-              <View style={{width: 120, height: 20, borderRadius: 4}} />
-              <View
-                style={{marginTop: 6, width: 80, height: 20, borderRadius: 4}}
-              />
-            </View>
-          </View>
-          <View style={{marginTop: 10, marginBottom: 30}}>
-            <View style={{width: 300, height: 20, borderRadius: 4}} />
-            <View
-              style={{marginTop: 6, width: 250, height: 20, borderRadius: 4}}
-            />
-            <View
-              style={{marginTop: 6, width: 350, height: 200, borderRadius: 4}}
-            />
-          </View>
+         
         </View>
+        </View>
+   
       </ScrollView>
-    ) : (
-      <View> 
-      <View  style={style.sectionTitle1}></View>
-      <Text style={[style.sectionTitle,{marginTop:45}]}>Accueil</Text>
+
+
+      <View style={style.sectionTitle1}> 
+<View>
+          <Text style={[style.sectionTitle,{marginTop:45}]}>Accueil</Text>
      
 
-   
+               <FlatList
+                  vertical
+                  showsVerticalScrollIndicator={false}
+                  data={this.state.posts}
+                  keyExtractor={item => item.postTime.toString()}
+                  renderItem={({ item }) =>
 
-      
-      <FlatList
-          data={posts}
-          renderItem={({item}) => (
-            <ECPostCard            
-              item={item}
-                onDelete={handleDelete}
-                onPress={() =>
-                  navigation.navigate('ecDetail', { userId: item.id,})
-                }
-            />
+
+ /* <TouchableRipple
+                    onPress={() => this.props.navigation.push('ecDetail', { postData: item,postId:item.postId
+                        ,post:item.post,postImg:item.postImg })}
+                    borderless={true}
+
+                >
+                       */
+
+
+
+                        <ECPostCard
+                            userName={item.nom_soc}
+                            userIconUrl={item.imageUrl}
+                            postId={item.postId}
+                            userId={this.state.uid}
+                            postImg={item.postImg}
+                            post={item.post}
+                            postTime={item.postTime}
+                            postLikes={item.likes}
+                            postComments={item.comments}
+                            navigation={this.props.navigation}
+
+                            
+
+                            
+                        />
+                       /* 
+                       </TouchableRipple>
+                       */
+                    }
+                    ListFooterComponent={this.renderFooter}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.isLoading}
+                            onRefresh={this.onRefresh}
+                        />
+                    }
+                    initialNumToRender={2}
+                    onEndReachedThreshold={0.1}
+                    onMomentumScrollBegin={() => { onEndReachedCalledDuringMomentum = false; }}
+                   
+
+                    ListEmptyComponent={<View style={{alignItems:'center',justifyContent:'center'}} >
+                   
+                </View>}
+
+                />
+
+</View>       
         
-          )}
-          keyExtractor={(item) => item.id}
-          ListHeaderComponent={ListHeader}
-          ListFooterComponent={ListHeader}
-          showsVerticalScrollIndicator={false}
-        />
-
-
-
-       </View>
       
-    
-   
-    )}
-    <View style={{marginBottom:190}}></View>
-    </ScrollView>
-  </SafeAreaView>
-  )
+</View>  
+      </ScrollView>   
+      <View style={{marginBottom:50}}>
+        </View>  
+    </View>
+        );
+    }
 }
+
+
 const style = StyleSheet.create({
-  header: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: "#1f487e",
-    
-  },
-  inputContainer2: {
-    height: 320,
-    width: 200,
-    marginTop:10,
-    top:-25,
-    borderRadius: 10,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    elevation: 12,
-    shadowColor:'#1f487e'
-  },
-  inputContainer1: {
-    height: 425,
-    width: 350,
-    marginTop:20, 
-    alignItems: 'center',
-    elevation:15,
-    shadowColor:'#1f487e',
-   marginLeft:-10
-  },
-  headerTitle: {
-    color: "#fff",
-    fontWeight: 'bold',
-    fontSize: 18,
-    
-  },
-  itemContainer: {
-    marginHorizontal: 10,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    elevation: 16,
-    height:192,
-    width:450,
-    marginLeft:-10,
-    //marginRight:40,
-    //justifyContent: 'center',
-    marginBottom: 20,
-    shadowColor:'#000',
-    marginTop:20,
-    shadowOffset: {
-      width: 0,
-      height: 3,
+    header: {
+      paddingVertical: 20,
+      paddingHorizontal: 20,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      backgroundColor: "#1f487e",
+      height:90,
+
+      
     },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-  },
-  inputContainer: {
-    height: 220,
-    width: '100%',
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    position: 'absolute',
-    top: 150,
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    elevation: 12,
-  },
-  categoryContainer: {
-    marginTop: 60,
-    marginHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  iconContainer: {
-    height: 60,
-    width: 60,
-    backgroundColor: "#e1e8e9",
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  sectionTitle1: {
-    marginTop:280,
-    marginHorizontal: 20,
-    marginVertical: 20,
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-  sectionTitle: {
-    marginHorizontal: 20,
-    marginVertical: 20,
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-  cardImage: {
-    height: 220,
-    width: width / 2,
-    marginRight: 20,
-    padding: 10,
-    overflow: 'hidden',
-    borderRadius: 10,
-  },
-  rmCardImage: {
-    width: width - 40,
-    height: 200,
-    marginRight: 20,
-    borderRadius: 10,
-    overflow: 'hidden',
-    padding: 10,
-  },
-});
-export default HomeEC
+  
+    inputContainer1: {
+      height: 425,
+      width: 350,
+      marginTop:-150, 
+      alignItems: 'center',
+      elevation:15,
+      shadowColor:'#1f487e',
+     marginLeft:-10
+    },
+    headerTitle: {
+      color: "#fff",
+      fontWeight: 'bold',
+      fontSize: 18,
+      marginTop:28
+      
+    },
+    itemContainer: {
+      marginHorizontal: 10,
+      backgroundColor: 'white',
+      borderRadius: 10,
+      elevation: 16,
+      height:192,
+      width:450,
+      marginLeft:-10,
+      //marginRight:40,
+      //justifyContent: 'center',
+      marginBottom: 20,
+      shadowColor:'#000',
+      marginTop:20,
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowOpacity: 0.27,
+      shadowRadius: 4.65,
+    },
+    inputContainer: {
+      height: 220,
+      width: '95%',
+      backgroundColor: "#fff",
+      borderRadius: 10,
+      position: 'absolute',
+      top: 80,
+      flexDirection: 'row',
+      paddingHorizontal: 20,
+      alignItems: 'center',
+      elevation: 12,
+    },
+    categoryContainer: {
+      marginTop: 60,
+      marginHorizontal: 20,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    iconContainer: {
+      height: 60,
+      width: 60,
+      backgroundColor: "#e1e8e9",
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 10,
+    },
+    sectionTitle1: {
+      marginTop:280,
+      marginHorizontal: 20,
+      marginVertical: 20,
+      fontWeight: 'bold',
+      fontSize: 20,
+    },
+    sectionTitle: {
+      marginHorizontal: 20,
+      marginVertical: 20,
+      fontWeight: 'bold',
+      fontSize: 20,
+    },
+    cardImage: {
+      height: 220,
+      width: width / 2,
+      marginRight: 20,
+      padding: 10,
+      overflow: 'hidden',
+      borderRadius: 10,
+    },
+    rmCardImage: {
+      width: width - 40,
+      height: 200,
+      marginRight: 20,
+      borderRadius: 10,
+      overflow: 'hidden',
+      padding: 10,
+    },
+  });

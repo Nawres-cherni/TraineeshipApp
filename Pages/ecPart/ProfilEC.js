@@ -34,20 +34,29 @@ export default class ProfilEC extends  Component{
     this.unsubscribe();
   }
 
+  
 
 
   render(){
   return(
 
 
-    <SafeAreaView style={styles.container}>
-          <View style={styles.header}>
-<TouchableOpacity onPress={()=>this.props.navigation.openDrawer()}>
-      <Icon name="sort" size={28} color={"#fff"} />
-                       </TouchableOpacity>
-                 <Text style={styles.headerTitle}>Profil</Text>
-                 <Icon name="notifications-none" size={28} color={"#fff"} />
+    <SafeAreaView >
+<View style={styles.header}>
+
+<TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
+<Icon name="chevron-left" size={28} color={"#fff"}style={{marginTop:10}}  />
+     </TouchableOpacity>
+     <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
+
+<Text style={styles.headerTitle}>Profil</Text>
+
+
+
 </View>
+
+</View>
+
 <View style={styles.centrizedView}>
   <View  style={styles.authBox}>
 
@@ -59,7 +68,7 @@ export default class ProfilEC extends  Component{
 
       <Image
       source={require('../../assets/images/edit_user.png')}
-            style={{top:-60,marginLeft:300,width:55,height:55}}
+            style={{top:-50,marginLeft:280,width:55,height:55}}
           />  
 
               </TouchableOpacity>
@@ -80,7 +89,7 @@ export default class ProfilEC extends  Component{
           <Title style={[styles.title, {
             marginTop:15,
             marginBottom: 5,
-          }]}>{this.state.user.nom_res}</Title>
+          }]}>{this.state.user.name}</Title>
           <Caption style={styles.caption}>{this.state.user.email}</Caption>
         </View>
       </View>
@@ -167,7 +176,9 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: 'bold',
     fontSize: 18,
-    marginTop:20
+    marginTop:28,
+    alignSelf:'center'
+    
   },
   header: {
     paddingVertical: 20,
@@ -175,15 +186,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: "#1f487e",
-    top:-80,
     height:90,
-    borderBottomLeftRadius:45,
-    borderBottomRightRadius:45
+
     
   },
   authBox:{
-  width:'90%',
-  height:'90%',
+    marginTop:80,
+  width:'85%',
+  height:'70%',
   backgroundColor:'#fafafa',
   borderRadius:20,
   alignSelf:'center',
@@ -199,8 +209,11 @@ const styles = StyleSheet.create({
   elevation:10
   },
   userInfoSection: {
+    //flex:1,
     paddingHorizontal: 30,
     marginBottom: 25,
+    marginTop:10,
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 24,
@@ -212,8 +225,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   row: {
+    
     flexDirection: 'row',
     marginBottom: 10,
+    paddingVertical:5
   },
   infoBoxWrapper: {
     borderBottomColor: '#dddddd',

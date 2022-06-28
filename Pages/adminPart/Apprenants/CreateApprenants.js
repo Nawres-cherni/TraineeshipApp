@@ -180,6 +180,8 @@ const textInputChange = (val) => {
               phone,
               imageUrl: image,
               password,  
+              chats: [],
+                bgColor: '#FFF',
             })
   
             props.navigation.navigate("listApprenants")

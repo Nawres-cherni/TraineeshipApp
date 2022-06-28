@@ -22,7 +22,7 @@ import Modal from 'react-native-modal';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default class PostCard extends Component {
+export default class PostCardFavorite extends Component {
 
     // const [expand, setExpand] = useState(false);
     // const [likes, setLikes] = useState(postLikes);
@@ -40,31 +40,7 @@ export default class PostCard extends Component {
             expand: !this.state.expand
         })
     }
-    handleLike = () => {
-        // console.log('like pressed', likes.includes(userId))
-        if (this.state.likes.includes(this.props.userId)) {
-            let id = this.props.userId
-            console.log('unlike')
-            let likearray = this.state.likes.filter(function (item) {
-                return item !== id
-            })
-            console.log('filyered', likearray)
-            this.setState({ likes: likearray },
-                () => firebase.firestore().collection('posts').doc(this.props.postId).update({
-                    likes: this.state.likes
-                }).then(() => console.log('unliked')))
-
-        }
-        else {
-            console.log('like',)
-            let x = this.state.likes
-            x.push(this.props.userId)
-            this.setState({ likes: x },
-                () => firebase.firestore().collection('posts').doc(this.props.postId).update({
-                    likes: this.state.likes
-                }).then(() => console.log('liked')))
-        }
-    }
+ 
 
   
 
@@ -97,13 +73,10 @@ export default class PostCard extends Component {
 
 
 
+
                 <View style={styles.bottom}>
                     <View style={styles.bottom__left} >
-                        <TouchableRipple
-                            onPress={() => this.handleLike()}
-                            rippleColor="rgba(0, 0, 0, .32)"
-                            borderless={true}
-                        >
+                    
                             {this.state.likes.includes(this.props.userId) ? <AntDesign
                                 name='heart'
                                 color='#e95950'
@@ -114,7 +87,7 @@ export default class PostCard extends Component {
                                     color='#000'
                                     size={25}
                                 />}
-                        </TouchableRipple>
+
                      
 
 
@@ -134,7 +107,6 @@ export default class PostCard extends Component {
                                 size={25}
                             />
                         }
-                        
                     </TouchableRipple>
                 </View>
                 <View>

@@ -35,19 +35,27 @@ export default class ProfilApp extends  Component{
 
 
 
+
   render(){
   return(
 
 
 
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView>
 
 <View style={styles.header}>
-<TouchableOpacity onPress={()=>this.props.navigation.openDrawer()}>
-      <Icon name="sort" size={28} color={"#fff"} />
-                       </TouchableOpacity>
-                 <Text style={styles.headerTitle}>Profil</Text>
-                 <Icon name="notifications-none" size={28} color={"#fff"} />
+
+<TouchableOpacity onPress={()=>this.props.navigation.goBack()}>
+<Icon name="chevron-left" size={28} color={"#fff"}style={{marginTop:10}}  />
+     </TouchableOpacity>
+     <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
+
+<Text style={styles.headerTitle}>Profil</Text>
+
+
+
+</View>
+
 </View>
 
 
@@ -108,8 +116,12 @@ export default class ProfilApp extends  Component{
     <View style={styles.menuWrapper}>
       <TouchableRipple onPress={() => {}}>
         <View style={styles.menuItem}>
-          <Ionicons name="heart" color="#FF6347" size={25}/>
+        <Ionicons name="heart" color="#FF6347" size={25}/>
+          <TouchableOpacity onPress={()=>this.props.navigation.navigate('Favorite')}>
+    
           <Text style={styles.menuItemText}>Your Favorites</Text>
+          </TouchableOpacity>
+          
         </View>
       </TouchableRipple>
       </View>
@@ -136,7 +148,7 @@ const styles = StyleSheet.create({
   },
   centrizedView:{
     width:'100%',
-  
+    marginTop:120,
   },
   headerTitle: {
     color: "#fff",
@@ -158,6 +170,7 @@ const styles = StyleSheet.create({
   },
 
   authBox:{
+    marginTop:80,
   width:'90%',
   height:'90%',
   backgroundColor:'#fafafa',
@@ -220,5 +233,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 26,
   },
+
+  headerTitle: {
+    color: "#fff",
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginTop:28,
+    alignSelf:'center'
+    
+  },
+  header: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: "#1f487e",
+    height:90,
+
+    
+  },
+
+
   });
   

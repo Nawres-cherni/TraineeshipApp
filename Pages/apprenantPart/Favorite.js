@@ -29,7 +29,7 @@ let onEndReachedCalledDuringMomentum = false;
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const {width} = Dimensions.get('screen');
-export default class Home extends Component {
+export default class Favorite extends Component {
 
     constructor(props) {
         super(props)
@@ -43,29 +43,18 @@ export default class Home extends Component {
             Quote:'Loading...',
             Author:'Loading...',
             user: {},
-            chats: [],
-            bgColor: '#FFF'
+            postLikes:this.props.likes
         }
     }
 
     
 
     componentDidMount() {
-      let chatData = []
-    const user = firebase.auth().currentUser.uid; 
-    this.unsubscribe = firebase.firestore()
-    .collection("apprenants")
-    .doc(user)
-    .onSnapshot(doc =>{
-      chatData = doc.data().chats
-      this.setState({user: doc.data(),chats: chatData, bgColor: doc.data().bgColor,});
-    });
+    
         this.getposts();
-        this.randomQuote();
+  
     }
-    componentWillUnmount(){
-        this.unsubscribe();
-      }
+   
     
   
 
@@ -73,7 +62,9 @@ export default class Home extends Component {
 
         this.setState({ isLoading: true });
 
-        const snapshot = await firebase.firestore().collection('posts').orderBy('postTime', 'desc').limit(10).get();
+        const snapshot = await firebase.firestore().collection('posts').orderBy('postTime', 'desc')
+     //   .where('likes', '==',this.state.postLikes)
+        .get();
 
         if (!snapshot.empty) {
             let newPosts = [];
@@ -94,6 +85,7 @@ export default class Home extends Component {
 
             }
 
+            
 
 
             this.setState({ posts: newPosts })
@@ -103,19 +95,7 @@ export default class Home extends Component {
     }
 
   
-     randomQuote = () => {
-        this.setState({ isLoading:true });
-      
-        fetch("https://api.quotable.io/random").then(res => res.json()).then(result => {
-          // console.log(result.content);
-        this.setState({ Quote:result.content });
-        this.setState({ Author:result.author });
-        this.setState({ isLoading:false });
-
-        
-        })
-      }
-
+  
     
 
     onRefresh = () => {
@@ -147,13 +127,13 @@ export default class Home extends Component {
                  </TouchableOpacity>
                  <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
            
-            <Text style={style.headerTitle}>Accueil</Text>
+            <Text style={style.headerTitle}>Favorite</Text>
            
            
       
           </View>
-          <Avatar.Image size={45}     source={{uri : this.state.user.imageUrl}} style={{marginTop:10}} />
-  
+        
+
 </View>
 <ScrollView 
   refreshControl={
@@ -179,95 +159,16 @@ export default class Home extends Component {
             justifyContent: 'space-between',
             alignItems:'center',
           }}>
-         <View style={{flex:1,alignContent:'center',alignItems:'center'}}>
-       
-
-        <View
-        style={style.inputContainer}>
-           <Text
-          style={{        
-            fontSize: 18,
-            fontWeight: '200',
-            color: '#001845',
-          marginTop:-170,
-          marginLeft:80
-           
-          }}>
-          Quote of the Day
-        </Text>
-          <View style={{marginLeft:-240}}>
-          </View>
-        <FontAwesome5
-          name="quote-left"
-          style={{
-           // fontSize: 20,
-             marginBottom: 100}}
-          color="#000"
-        />
-        <Text
-          style={{
-            color: '#000',
-            //fontSize: 16,
-            lineHeight: 26,
-            letterSpacing: 1.1,
-            fontWeight: '400',
-            textAlign: 'center',
-           // marginBottom: 10,
-            //paddingHorizontal: 30,
-          }}>
-          {this.state.Quote}
-        </Text>
-        <FontAwesome5
-          name="quote-right"
-          style={{
-            //fontSize: 20,
-            textAlign: 'right',
-            marginTop: -20,
-            marginBottom: -100,
-          }}
-          color="#000"
-        />
-        <Text
-          style={{
-            textAlign: 'right',
-            fontWeight: '300',
-            fontStyle: 'italic',
-            fontSize: 16,
-            color: '#000',
-            marginTop:180,
-            marginLeft:-200
-          }}>
-          —— {this.state.Author}
-        </Text>
-
-      </View>
-
-      </View>
-     
+    
         </View>       
 
 
 
-        <ScrollView
-        style={{flex: 1}}
-        contentContainerStyle={{alignItems: 'center'}}>
- <View>
-          <View>
-          
-         
-        </View>
-        <View>
-         
-        </View>
-        </View>
-   
-      </ScrollView>
 
 
-      <View style={style.sectionTitle1}> 
+    
 <View>
-          <Text style={[style.sectionTitle,{marginTop:45}]}>Accueil</Text>
-         
+      
                <FlatList
                     vertical
                     showsVerticalScrollIndicator={false}
@@ -277,16 +178,14 @@ export default class Home extends Component {
                   <View>
                       <TouchableRipple
                     onPress={() => this.props.navigation.push('appProfilEC', { postData: item,userId:item.userId,post:item.post
-                     , chats: this.state.chats, bgColor: this.state.bgColor
+                        
                     
                     })}
                     borderless={true}
 
                 >
 
-
                       <PostCard
-                    
                     
                             userName={item.nom_soc}
                             userIconUrl={item.imageUrl}
@@ -319,10 +218,7 @@ export default class Home extends Component {
 </View>       
         
       
-</View>  
-<View style={{marginBottom:90}} >
-
-</View>
+ 
       </ScrollView>     
     </View>
   

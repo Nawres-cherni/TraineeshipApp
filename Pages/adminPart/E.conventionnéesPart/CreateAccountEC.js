@@ -55,6 +55,8 @@ const CreateAccountEC = (props) => {
               .set({
                 email,
                 password,  
+                chats: [],
+                bgColor: '#FFF',
               })
     
         
@@ -161,6 +163,7 @@ const CreateAccountEC = (props) => {
                 /> 
 
             </View>  
+
 
 
 

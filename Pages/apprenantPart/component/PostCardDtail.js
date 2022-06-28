@@ -22,7 +22,7 @@ import Modal from 'react-native-modal';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default class PostCard extends Component {
+export default class PostCardDetail extends Component {
 
     // const [expand, setExpand] = useState(false);
     // const [likes, setLikes] = useState(postLikes);
@@ -77,8 +77,9 @@ export default class PostCard extends Component {
                 <View style={styles.header} >
                     <View style={{ alignItems: 'center', flexDirection: 'row' }} >
                         <Avatar.Image size={40} source={{ uri: this.props.userIconUrl }} />
-                        <Text style={{ marginLeft: 15 }}>{this.props.userName}{'\n'}</Text>
-                        <Text style={{fontSize:12,color: '#666', marginLeft: -30,marginTop:25 }}>{moment(this.props.postTime.toDate()).fromNow()}</Text>
+                        <Text style={{ marginLeft: 15 }}>{this.props.userName}</Text>
+                       
+                   
                     </View>
                    
                 </View>
@@ -134,7 +135,6 @@ export default class PostCard extends Component {
                                 size={25}
                             />
                         }
-                        
                     </TouchableRipple>
                 </View>
                 <View>
@@ -146,7 +146,7 @@ export default class PostCard extends Component {
                     <>
                         {this.state.expand ?
                             <Text>{this.props.postDescription}</Text> :
-                            <Text>{this.props.postDescription.slice(0, 50)}....</Text>
+                            <Text>{this.props.postDescription.slice(0, 50)}</Text>
                         }
                     </>}
              
