@@ -156,17 +156,16 @@ useEffect(()=>{
  })}>
   <Text style={styles.userBtnTxt}>Voir Profil Detail</Text>
 </TouchableOpacity>
+
 <TouchableOpacity
-                                onPress={() => navigation.push('ChatApp', { name:name, imageUrl:imageUrl, uid:uid, chatId: chatId, typing: [], bgColor:bgColor })
-       
-                            }
-                               
-                               
-                                rippleColor="rgba(0, 0, 0, .32)"
-                                borderless={true}
-                            >
-                                <Text>Con</Text>
-                            </TouchableOpacity>   
+ style={styles.userBtn}
+onPress={() => navigation.push('ChatApp', { name:name, imageUrl:imageUrl, uid:uid, chatId: chatId, typing: [], bgColor:bgColor })
+}
+rippleColor="rgba(0, 0, 0, .32)"
+borderless={true}
+>
+<Text style={styles.userBtnTxt}>Contacter</Text>
+ </TouchableOpacity>   
      
     
    </View>

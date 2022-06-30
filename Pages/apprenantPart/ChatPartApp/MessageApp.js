@@ -181,11 +181,13 @@ export default class MessageApp extends Component {
 
         if (found) {
             console.log('found', chatId)
-            this.props.navigation.push('ChatApp', { name: data.name, imageUrl: data.imageUrl, uid: data.uid, chatId: chatId, blocked: blocked, blockId: blockId, typing: [], bgColor: this.state.bgColor })
+            this.props.navigation.push('ChatApp', { name: data.name, imageUrl: data.imageUrl, uid: data.uid, 
+                chatId: chatId, blocked: blocked, blockId: blockId, typing: [], bgColor: this.state.bgColor })
         }
         else {
             console.log('not found')
-            this.props.navigation.push('ChatApp', { name: data.name, imageUrl: data.imageUrl, uid: data.uid, blocked: false, blockId: [], typing: [], bgColor: this.state.bgColor })
+            this.props.navigation.push('ChatApp', { name: data.name, imageUrl: data.imageUrl, 
+                uid: data.uid, blocked: false, blockId: [], typing: [], bgColor: this.state.bgColor })
         }
 
     }

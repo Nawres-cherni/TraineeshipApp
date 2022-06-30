@@ -13,8 +13,9 @@ import {
 import  firebase from 'firebase';
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import Fontisto from 'react-native-vector-icons/Fontisto'
 import Entypo from 'react-native-vector-icons/Entypo'
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -191,6 +192,27 @@ customStyles={{
         <Text style={{ marginLeft: 15, color: '#23395D' }} >Detail Post</Text>
     </View>
 </TouchableRipple>
+
+
+<TouchableRipple
+      onPress={() => this.props.navigation.push('ListLike')}
+    rippleColor="rgba(0, 0, 0, .32)"
+    borderless={true}
+    style={styles.bottomButtons}
+>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }} >
+        <MaterialCommunityIcons
+            name='account-heart'
+            color='#B40404'
+            size={30}
+        />
+        <Text style={{ marginLeft: 15, color: '#23395D' }} >List Jaime</Text>
+    </View>
+</TouchableRipple>
+
+
+
+
 <TouchableRipple
     onPress={() => this.RBSheet.close()}
     rippleColor="rgba(0, 0, 0, .32)"

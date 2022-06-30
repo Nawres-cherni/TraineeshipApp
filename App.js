@@ -67,7 +67,11 @@ import ECPostCard from './Pages/ecPart/components/ECPostCard';
 import Favorite from './Pages/apprenantPart/Favorite';
 import ProgressiveImage from './Pages/ecPart/components/ProgressiveImage';
 import MapApp from './Pages/apprenantPart/MapApp';
-import LikeList from './Pages/apprenantPart/LikeList';
+import ListLike from './Pages/ecPart/ListLike';
+
+
+
+
 
 //Apprenant Oart
 import Home from './Pages/apprenantPart/Home';
@@ -81,7 +85,7 @@ import theme from './Pages/Styles/theme';
 //chat Apprenants Part
 import MessageApp from './Pages/apprenantPart/ChatPartApp/MessageApp';
 import ChatApp from './Pages/apprenantPart/ChatPartApp/ChatApp';
-
+import Notification from './Pages/ecPart/Notification/Notification';
 import ChatEc from './Pages/ecPart/ChatPartEc/ChatEc';
 import MessageEc from './Pages/ecPart/ChatPartEc/MessageEc';
 const DrawerApprenant = createDrawerNavigator();
@@ -521,6 +525,39 @@ function TabNavigatorECPart(){
       }
     })}
     />
+
+
+<TabEc.Screen name="Notification" component={Notification}
+    screenOptions={{unmountOnBlur: true }}
+    options={{
+     
+      tabBarIcon: ({ focused }) => (
+        <View style={{
+          // centring Tab Button...
+          position: 'absolute',
+          top: 15,
+          alignItems:"center",
+          justifyContent:"center"
+        }}>
+          <AntDesign
+            name="notification"
+            size={30}
+            color={focused ? "#1f487e" : 'gray'}
+            style={{top:-10}}
+          ></AntDesign>
+              <Text style={{color: focused ? "#1f487e" : 'gray',fontSize:12,marginTop:-15}}>Notification</Text>          
+        </View>     
+      )
+    }} listeners={({ navigation, route }) => ({
+      // Onpress Update....
+      tabPress: e => {
+        Animated.spring(tabOffsetValue, {
+          toValue: getWidth() * 1.8,
+          useNativeDriver: true
+        }).start();
+      }
+    })}
+    />
   </TabEc.Navigator>
   
   )
@@ -719,6 +756,8 @@ const theme=useContext(themeContext);
         }}/>       
 
 
+
+
         </DrawerEC.Navigator>
   )
   }
@@ -765,9 +804,9 @@ useEffect(()=>{
 
       <StackSplash.Screen name="ChatEC"  component={ChatEc} options={navOptionHandler}/>
 
+      <StackSplash.Screen name="ListLike"  component={ListLike} options={navOptionHandler}/>
 
 
-      <StackSplash.Screen name="LikeList"  component={LikeList} options={navOptionHandler}/>
 
 
 
